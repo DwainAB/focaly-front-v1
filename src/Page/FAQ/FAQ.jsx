@@ -26,33 +26,71 @@ const FAQ = () => {
                 <div>
                     Nous acceptons plusieurs modes de paiement :
                     <ul>
-                      <br></br>
-                        <li>Cartes de crédit et de débit : Nous acceptons les paiements par Visa, Mastercard, American Express et autres principales cartes de crédit et de débit.</li><br></br>
-                        <li>PayPal : Vous pouvez également utiliser votre compte PayPal pour régler votre location en toute simplicité et sécurité.</li><b></b>
-                        <li>Apple Pay : Pour une expérience de paiement encore plus rapide et pratique, nous prenons en charge les paiements via Apple Pay.</li>
+                        <li>Cartes de crédit et de débit : Visa, Mastercard, American Express et autres.</li>
+                        <li>PayPal : Vous pouvez utiliser votre compte PayPal.</li>
+                        <li>Apple Pay : Paiement rapide via Apple Pay.</li>
                     </ul>
                 </div>
             ),
         },
         {
             question: "Quelle est la durée minimale de location ?",
-            answer: "La durée minimale de location pour notre service est de 4 jours. Cette durée a été établie pour permettre aux clients de bénéficier pleinement de l'utilisation du matériel et de réaliser leurs projets de manière optimale."
+            answer: "La durée minimale de location pour notre service est de 4 jours."
         },
         {
             question: "Est-il nécessaire d'inclure les délais de livraison dans la date de location ?",
-            answer: "Non, il n'est pas nécessaire d'inclure les délais de livraison dans les dates de location. Nous nous engageons à livrer le matériel entre 24 et 72 heures avant le début de votre location, afin que vous ayez le temps nécessaire pour vous préparer et utiliser l'équipement en toute tranquillité."
+            answer: "Non, nous livrons le matériel entre 24 et 72 heures avant la période de location."
+        },
+    ];
+
+    const livraisonFaqs = [
+        {
+            question: "Quels sont les délais de livraison ?",
+            answer: (
+                <div>
+                    Nous livrons entre 24 et 72 heures avant le début de votre location.
+                </div>
+            ),
         },
         {
-            question: "Comment puis-je savoir si le matériel que je souhaite louer est disponible ?",
-            answer: "Si le matériel que vous souhaitez louer est disponible sur notre site, cela signifie qu'il est disponible à la location. Nous mettons à jour régulièrement notre inventaire pour refléter la disponibilité en temps réel. Ainsi, tant que le matériel apparaît sur notre site et qu'il peut être ajouté au panier, vous pouvez le réserver et être assuré de sa disponibilité pour la période souhaitée."
+            question: "Comment retourner le matériel à la fin de la période de location ?",
+            answer: (
+                <div>
+                    Nos colis sont réutilisables et un bon de retour est inclus. Déposez-le dans un point relais avec l'emballage réutilisable.
+                </div>
+            ),
         },
         {
-            question: "Est-ce que le matériel loué est couvert par une assurance ?",
-            answer: "Oui, le matériel loué chez nous est couvert par une assurance. Nous accordons une grande importance à la sécurité et à la protection de nos clients et de leur équipement. Ainsi, chaque location inclut une assurance qui couvre le matériel contre un dysfonctionnement technique du produit n'entraînant pas le remplacement total de l'appareil."
+            question: "À quelle date dois-je retourner mon matériel ?",
+            answer: (
+                <div>
+                    Vous devez retourner le matériel dans les 24 heures ouvrées suivant la fin de la location pour éviter les pénalités.
+                </div>
+            ),
         },
         {
-            question: "Proposez-vous des réductions pour des locations à long terme ?",
-            answer: "Absolument ! Nous proposons des réductions avantageuses pour les locations à long terme. Notre politique de tarification est automatiquement dégressive, ce qui signifie que plus vous louez longtemps, plus le prix de location quotidien diminue. Nous avons conçu cette approche pour récompenser nos clients fidèles et encourager les projets sur une durée prolongée."
+            question: "Quels sont les frais de livraison et de retour du matériel ?",
+            answer: (
+                <div>
+                    Les frais de livraison et de retour sont pris en charge par notre entreprise. Vous n'avez pas à vous soucier des coûts supplémentaires.
+                </div>
+            ),
+        },
+        {
+            question: "Est-ce que la livraison en Belgique est possible ?",
+            answer: (
+                <div>
+                    Oui, nous livrons en Belgique avec un service rapide et fiable.
+                </div>
+            ),
+        },
+        {
+            question: "Est-il possible de modifier ou prolonger ma réservation après réception des équipements ?",
+            answer: (
+                <div>
+                    Oui, vous pouvez modifier ou prolonger votre réservation en contactant notre service client.
+                </div>
+            ),
         },
     ];
 
@@ -63,8 +101,9 @@ const FAQ = () => {
     return (
         <div className="faq-container">
             <h1>Questions les plus courantes</h1>
+
             <h2>Achat</h2>
-            <p>Toutes les questions concernant votre expérience d'achat sur le magasin et le processus de paiement.</p>
+            <p>Toutes les questions concernant votre expérience d'achat.</p>
             <div className="faq-list">
                 {faqs.map((faq, index) => (
                     <div key={index} className="faq-item">
@@ -81,6 +120,52 @@ const FAQ = () => {
                         </div>
                     </div>
                 ))}
+            </div>
+
+            <h2>Livraison et retour</h2>
+            <p>En savoir plus sur notre politique d'expédition et de retour.</p>
+            <div className="faq-list">
+                {livraisonFaqs.map((faq, index) => (
+                    <div key={index} className="faq-item">
+                        <div 
+                            className="faq-question" 
+                            onClick={() => toggleFAQ(index)}
+                        >
+                            {faq.question}
+                        </div>
+                        <div 
+                            className={`faq-answer ${activeIndex === index ? 'active' : ''}`}
+                        >
+                            {faq.answer}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            <div className="customer-service">
+                <h2>Service Client</h2>
+                <p>
+                    <i className="icon-customer-service" /> 
+                    Notre service clientèle est disponible du lundi au dimanche de 8h à 20h30. 
+                    Délai de réponse moyen : 12h.
+                </p>
+
+                <form className="contact-form">
+                    <h3>Contactez-nous !</h3>
+                    <label>
+                        Email :
+                        <input type="email" name="email" />
+                    </label>
+                    <label>
+                        Nom :
+                        <input type="text" name="name" />
+                    </label>
+                    <label>
+                        Message :
+                        <textarea name="message"></textarea>
+                    </label>
+                    <button type="submit" className="btn-envoyer">Envoyer</button>
+                </form>
             </div>
         </div>
     );

@@ -1,0 +1,27 @@
+.camera-card {
+    transition: transform 0.2s;
+    opacity: 0; /* Initial opacity for fade-in */
+    transform: translateY(20px); /* Start off translated down */
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.camera-card.show {
+    opacity: 1; /* Show opacity when class is added */
+    transform: translateY(0); /* Reset translation */
+}
+
+.camera-card:hover {
+    transform: scale(1.05); /* Scale up on hover */
+}
+
+.image-container {
+    overflow: hidden; /* Cache les images qui débordent */
+}
+
+.camera-image {
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .camera-image {
+    opacity: 0.7; /* Change l'opacité de l'image au survol */
+}
