@@ -6,6 +6,7 @@ import Insta360 from '../../Assets/Insta360.webp';
 import Gopro from '../../Assets/image.png'; 
 import DJI from '../../Assets/image copy.png'; 
 import GoproHover from '../../Assets/image copy.png'; 
+import About from '../../components/About/About';
 
 const Cameras = () => {
     const products = [
@@ -29,13 +30,12 @@ const Cameras = () => {
         return product.price <= parseFloat(filter);
     });
 
-    // Utilisez useEffect pour faire apparaître les produits
     useEffect(() => {
         const timeout = setTimeout(() => {
             setShowProducts(filteredProducts.map((_, index) => index));
-        }, 100); // Délai avant de commencer à montrer les produits
+        }, 100);
 
-        return () => clearTimeout(timeout); // Nettoyer l'effet
+        return () => clearTimeout(timeout); 
     }, [filteredProducts]);
 
     return (
@@ -78,6 +78,7 @@ const Cameras = () => {
                     </Col>
                 ))}
             </Row>
+        <About /> 
         </div>
     );
 };

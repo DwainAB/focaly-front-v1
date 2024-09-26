@@ -29,9 +29,9 @@ const Header = () => {
                         { name: 'Caméras Embarquées', path: '/cameras' },
                         { name: 'Appareils Photos', path: '/AppareilsPhotos' },
                         { name: 'Drones', path: '/drones' },
-                        { name: 'Accessoires', path: '/accessories' },
-                        { name: 'Pack', path: '/pack' },
-                        { name: 'Pack Pour les Professionnels', path: '/professional-packs' }
+                        { name: 'Accessoires', path: '/Accessoires' },
+                        { name: 'Pack', path: '/Packes' },
+                        { name: 'Pour les Professionnels', path: '/Professionnels' }
                     ].map((item, index) => (
                         <Nav.Link 
                             key={index} 
@@ -46,7 +46,7 @@ const Header = () => {
                     <Nav.Link onClick={handleSearchClick} className="mx-3" style={{ color: 'black', fontSize: '0.8rem' }}>
                         <Search size={20} />
                     </Nav.Link>
-                    <Nav.Link href="#cart" className="mx-3" style={{ fontSize: '0.8rem' }}>
+                    <Nav.Link href="Cart" className="mx-3" style={{ fontSize: '0.8rem' }}>
                         <Cart size={20} />
                     </Nav.Link>
                 </Nav>

@@ -7,7 +7,7 @@
 }
 
 .image-container {
-    overflow: hidden; /* Cache les images qui débordent */
+    overflow: hidden;
 }
 
 .camera-image {
@@ -15,7 +15,7 @@
 }
 
 .image-container:hover .camera-image {
-    opacity: 0.7; /* Change l'opacité de l'image au survol */
+    opacity: 0.7; 
 }
 
 .camera-card {

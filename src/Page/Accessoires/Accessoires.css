@@ -1,0 +1,31 @@
+.accessoire-card {
+    transition: transform 0.2s;
+    background-color: red;
+}
+
+.accessoire-card:hover {
+    transform: scale(1.05);
+}
+
+.image-container {
+    overflow: hidden;
+}
+
+.accessoire-image {
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .accessoire-image {
+    opacity: 0.7; 
+}
+
+.accessoire-card {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.accessoire-card.show {
+    opacity: 1;
+    transform: translateY(0);
+}

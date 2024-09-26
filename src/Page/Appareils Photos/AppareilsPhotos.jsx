@@ -3,14 +3,14 @@ import { Link } from 'react-router-dom';
 import './AppareilsPhotos.css';
 import { Card, Row, Col, Form } from 'react-bootstrap';
 import Gopro from '../../Assets/image.png'; 
+import About from '../../components/About/About';
 import DJI from '../../Assets/image copy.png'; 
 
 const AppareilsPhotos = () => {
-    const [showCards, setShowCards] = useState(false); // État pour gérer l'affichage des cartes
+    const [showCards, setShowCards] = useState(false); 
     const products = [
         { id: 1, name: "Appareil Photo 1", price: 5.0, image: Gopro, hoverImage: DJI },
         { id: 2, name: "Appareil Photo 2", price: 6.0, image: DJI, hoverImage: Gopro },
-        // Ajoute d'autres appareils photo si nécessaire
     ];
 
     const [filter, setFilter] = useState('');
@@ -24,13 +24,12 @@ const AppareilsPhotos = () => {
         return product.price <= parseFloat(filter);
     });
 
-    // Utiliser useEffect pour afficher les cartes après le chargement
     useEffect(() => {
         const timer = setTimeout(() => {
             setShowCards(true);
-        }, 100); // Délai pour afficher les cartes
+        }, 100); 
 
-        return () => clearTimeout(timer); // Nettoyer le timer
+        return () => clearTimeout(timer); 
     }, []);
 
     return (
@@ -72,6 +71,7 @@ const AppareilsPhotos = () => {
                     </Col>
                 ))}
             </Row>
+         <About /> 
         </div>
     );
 };
