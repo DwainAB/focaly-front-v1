@@ -1,58 +1,76 @@
-// Exemple de mise à jour de Header.jsx
-import React from 'react';
-import { Navbar, Nav } from 'react-bootstrap';
-import { Cart, Search } from 'react-bootstrap-icons';
-import { useNavigate } from 'react-router-dom';
-import logo from '../../Assets/FOCALY - LOGOTYPE N.png'; 
+import React, { useState } from 'react';
 import './Navbar.css';
+import logo from "../../Assets/FOCALY - LOGOTYPE N.png";
+import { Link } from "react-router-dom";
 
-const TopNavbar = () => {
-    const navigate = useNavigate();
+const Navbar = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-    const handleSearchClick = () => {
-        navigate('/search'); 
-    };
+  //Gère l'ouverture est la fermeture de la navbar
+  const toggleMenu = () => {
+    setIsOpen(!isOpen);
+  };
 
-    const handleLogoClick = () => {
-        navigate('/'); 
-    };
+  const closeMenu = () => {
+    setIsOpen(false);
+  };
 
-    return (
-        <Navbar bg="light" expand="lg" fixed="top" className="py-3">
-            <Navbar.Brand onClick={handleLogoClick} style={{ cursor: 'pointer', marginLeft: '45px' }}>
-                <img src={logo} alt="Focaly Logo" style={{ height: '80px' }} />
-            </Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-                <Nav className="mx-auto">
-                    {[
-                        { name: 'Caméras Embarquées', path: '/cameras' },
-                        { name: 'Appareils Photos', path: '/AppareilsPhotos' },
-                        { name: 'Drones', path: '/drones' },
-                        { name: 'Accessoires', path: '/Accessoires' },
-                        { name: 'Pack', path: '/Packes' },
-                        { name: 'Pour les Professionnels', path: '/Professionnels' }
-                    ].map((item, index) => (
-                        <Nav.Link 
-                            key={index} 
-                            onClick={() => navigate(item.path)} 
-                            className="mx-2" 
-                            style={{ fontWeight: 'bold', color: 'black', fontSize: '1rem' }}>
-                            {item.name}
-                        </Nav.Link>
-                    ))}
-                </Nav>
-                <Nav className="d-flex align-items-center">
-                    <Nav.Link onClick={handleSearchClick} className="mx-3" style={{ color: 'black', fontSize: '0.8rem' }}>
-                        <Search size={20} />
-                    </Nav.Link>
-                    <Nav.Link href="Cart" className="mx-3" style={{ fontSize: '0.8rem' }}>
-                        <Cart size={20} />
-                    </Nav.Link>
-                </Nav>
-            </Navbar.Collapse>
-        </Navbar>
-    );
+  return (
+    <nav className="navbar">
+
+      <div className="navbar-logo logo-desktop">
+       <Link to="/"> <img src={logo} alt="Logo" /></Link>
+      </div>
+
+
+      <div className={`navbar-links ${isOpen ? 'active' : ''}`}>
+        <Link to="/collection/cameras-embarquée">Caméras Embarquées</Link>
+        <Link to="/collection/appareils-photos">Appareils Photos</Link>
+        <Link to="/collection/drones">Drones</Link>
+        <Link to="/collection/accessoires">Accessoires</Link>
+        <Link to="/collection/pack">Pack</Link>
+        <Link to="/collection/professionnels">Pour les professionnels</Link>
+      </div>
+
+
+      <div className="navbar-icons">
+        <span className="material-symbols-outlined">search</span>
+        <span className="material-symbols-outlined">shopping_basket</span>
+      </div>
+
+      <div className="hamburger" onClick={toggleMenu}>
+        <span className="material-symbols-outlined">menu</span>
+      </div>
+
+      <div className={`slide-menu ${isOpen ? 'show' : ''}`}>
+        <div className="close-icon" onClick={closeMenu}>
+          <span className="material-symbols-outlined">close</span>
+        </div>
+
+
+        <div className="slide-menu-links">
+          <Link to="/collection/cameras-embarquée" onClick={closeMenu}>Caméras Embarquées</Link>
+          <Link to="/collection/appareils-photos" onClick={closeMenu}>Appareils Photos</Link>
+          <Link to="/collection/drones" onClick={closeMenu}>Drones</Link>
+          <Link to="/collection/accessoires" onClick={closeMenu}>Accessoires</Link>
+          <Link to="/collection/pack" onClick={closeMenu}>Pack</Link>
+          <Link to="/collection/professionnels" onClick={closeMenu}>Pour les professionnels</Link>
+        </div>
+
+      </div>
+
+      <div className="navbar-logo logo-mobil">
+           <Link to="/"><img src={logo} alt="Logo" /></Link> 
+        </div>
+
+        <div className="navbar-icons icon-mobil">
+            <span className="material-symbols-outlined">search</span>
+            <span className="material-symbols-outlined">shopping_basket</span>
+        </div>
+
+
+    </nav>
+  );
 };
 
-export default TopNavbar;
+export default Navbar;

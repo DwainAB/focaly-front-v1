@@ -1,0 +1,216 @@
+.title-collection {
+    font-size: 72px !important;
+    font-weight: 900 !important;
+    color: var(--color-primary) !important;
+    text-align: center !important;
+    font-family: var(--font-primary) !important;
+    margin-top: 65px !important;
+}
+
+.product-list {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: center !important;
+    margin-left: 160px !important;
+    margin-right: 160px !important;
+    gap: 50px !important;
+    flex-wrap: wrap !important;
+}
+
+.product {
+    width: 100% !important;
+    max-width: 460px !important;
+}
+
+.product-list img {
+    width: 100% !important;
+    max-width: 450px !important;
+    max-height: 450px !important;
+    object-fit: cover !important;
+}
+
+.product .info-product {
+    padding: 24px 32px 32px !important;
+    font-family: var(--font-primary) !important;
+    color: var(--color-primary) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 15px !important;
+    line-height: 0 !important;
+}
+
+.product .info-product .title-product {
+    font-weight: 800 !important;
+    font-size: 16px !important;
+    margin: 0 !important;
+}
+
+.product .info-product .price-product {
+    color: #1a1a1ab3;
+}
+
+/*---------Partie qui gère le formulaire pour les professionnels---------*/
+
+.container-form-professional {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 20px !important;
+    margin-top: 50px !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+
+.container-form {
+    max-width: 1200px !important;
+    width: 100% !important;
+    padding: 0 160px !important;
+    box-sizing: border-box !important;
+}
+
+.container-form-professional h1 {
+    font-size: 56px !important;
+    font-weight: 900 !important;
+    font-family: var(--font-primary) !important;
+    text-align: center !important;
+    margin: 0 20px !important;
+}
+
+.container-form-professional h2 {
+    font-size: 44px !important;
+    font-weight: 900 !important;
+    font-family: var(--font-primary) !important;
+    margin: 50px 20px 70px 20px !important;
+    text-align: center !important;
+}
+
+.top-form-professional {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 50px !important;
+}
+
+.contact-form {
+    max-width: 1200px !important;
+    width: 100% !important;
+    gap: 50px !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.contact-form input, .contact-form textarea {
+    width: 100% !important;
+    height: 60px !important;
+    box-sizing: border-box !important;
+    resize: vertical !important;
+    border-radius: 15px !important;
+    border: 0 !important;
+    border: 2px solid #C0C0C0 !important;
+}
+
+.contact-form textarea {
+    padding: 24px 20px 8px !important;
+    height: 200px !important;
+}
+
+.contact-form input {
+    padding-left: 16px !important;
+}
+
+.contact-form button {
+    width: 160px !important;
+    height: 60px !important;
+    border-radius: 30px !important;
+    background-color: var(--color-primary) !important;
+    font-family: var(--font-primary) !important;
+    font-size: 16px !important;
+    color: var(--color-secondary) !important;
+    margin: 0 auto !important;
+    font-weight: 700 !important;
+}
+
+@media screen and (max-width: 1400px) {
+    .title-collection {
+        font-size: 56px !important;
+    }
+
+    .product-list {
+        margin-left: 100px !important;
+        margin-right: 100px !important;
+    }
+
+    .container-form-professional h1 {
+        font-size: 40px !important;
+    }
+
+    .container-form-professional h2 {
+        font-size: 32px !important;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .product-list {
+        margin-left: 50px !important;
+        margin-right: 50px !important;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .product-list {
+        flex-wrap: wrap !important;
+        margin: 0 !important;
+    }
+
+    .product-list img {
+        width: 350px !important;
+        height: 350px !important;
+    }
+
+    .product {
+        max-width: 360px !important;
+    }
+}
+
+@media screen and (max-width: 850px) {
+    .container-form {
+        padding: 0 100px !important;
+    }
+}
+
+@media screen and (max-width: 790px) {
+    .product-list img {
+        max-width: 450px !important;
+        max-height: 450px !important;
+        width: 100% !important;
+    }
+
+    .product {
+        max-width: 460px !important;
+        width: 100% !important;
+        margin: 0 20px !important;
+    }
+
+    .top-form-professional {
+        flex-direction: column !important;
+        gap: 20px !important;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    .title-collection {
+        font-size: 44px !important;
+    }
+
+    .container-form-professional h1 {
+        font-size: 32px !important;
+    }
+
+    .container-form-professional h2 {
+        font-size: 28px !important;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .container-form {
+        padding: 0 50px !important;
+    }
+}

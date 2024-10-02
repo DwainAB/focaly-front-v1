@@ -9,13 +9,8 @@ import ConditionsGenerales from './Page/ConditionsGenerales/ConditionsGenerales.
 import MentionsLegales from './Page/MentionsLegales/MentionsLegales.jsx';
 import FAQ from './Page/FAQ/FAQ.jsx';
 import Contact from './Page/Contact/Contact.jsx';
-import Cameras from './Page/Cameras/Cameras.jsx';
-import AppareilsPhotos from './Page/Appareils Photos/AppareilsPhotos.jsx';
-import Drones from './Page/drones/drones.jsx';
-import Accessoires from './Page/Accessoires/Accessoires.jsx';
-import Packes from './Page/Packs/Packs.jsx';
-import Professionnels from './Page/Professionnels/Professionnels.jsx';
 import Cart from './components/Cart/Cart.jsx';
+import Collection from './Page/Collection/Collection.jsx';
 
 
 
@@ -26,17 +21,12 @@ const App = () => {
                 <TopNavbar />
                 <Routes>
                     <Route path="/" element={<Home />} />
+                    <Route path="/collection/:categoryURL" element={<Collection/>}/>
                     <Route path="/search" element={<SearchPage />} /> 
                     <Route path="/conditions-generales" element={<ConditionsGenerales />} />
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/cameras" element={<Cameras />} /> 
-                    <Route path="/AppareilsPhotos" element={<AppareilsPhotos />} /> 
-                    <Route path="/Drones" element={<Drones />} /> 
-                    <Route path="/Accessoires" element={<Accessoires />} /> 
-                    <Route path="/Packes" element={<Packes />} /> 
-                    <Route path="/Professionnels" element={<Professionnels />} /> 
                     <Route path="/Cart" element={<Cart />} /> 
                 </Routes>
                 <Footer />
