@@ -1,68 +1,64 @@
-.container-about {
+.container-about{
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between; 
-    padding: 50px 20px;
-    background-color: #f8f9fa;
+    justify-content: center;
+    gap: 20px;
+    overflow-x: auto;
+    overflow-y: hidden;
+    height: 600px;
+    scrollbar-width: none;
+    margin: 0 40px;
+    margin-top: 50px;
 }
 
-.about-sujet {
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    flex-basis: 30%; 
+.container-about::-webkit-scrollbar {
+    display: none; 
+}
+
+.about-sujet{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    width: 280px;
+    min-width: 250px;
     text-align: center;
-    margin: 15px;
-    transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s, color 0.3s;
-    cursor: pointer;
+    font-family: var(--font-primary);
+    padding: 20px;
 }
 
-.about-sujet:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 30px #F9973E;
-    background-color: #F9973E; 
+.about-sujet h3{
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--color-primary);
 }
 
-.about-sujet:hover h3,
-.about-sujet:hover p,
-.about-sujet:hover ul,
-.about-sujet:hover li,
-.about-sujet:hover .text-bold { 
-    color: white; 
-}
-
-.about-sujet img {
-    width: 100px;
-    height: auto;
-    margin-bottom: 20px;
-}
-
-.about-sujet h3 {
-    font-size: 20px;
-    font-weight: 600;
-    color: #343a40;
-    margin-bottom: 15px;
-}
-
-.about-sujet p,
-.about-sujet ul {
+.about-sujet p, .about-sujet li{
     font-size: 16px;
-    color: #495057;
-    line-height: 1.5;
+    line-height: 30px;
 }
 
-.text-bold {
+
+
+.about-sujet img{
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    margin-bottom: 24px;
+}
+
+.text-bold{
     font-weight: 700;
-    color: #000000;
 }
 
-.container-stage {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+@media screen and (max-width: 1400px) {
+    .about-sujet h3{
+        font-size: 18px;
+    }
+
 }
 
-.container-stage li {
-    margin-bottom: 10px;
+@media screen and (max-width: 1200px) {
+
+
+    
 }
