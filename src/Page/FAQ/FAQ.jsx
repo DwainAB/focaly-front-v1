@@ -100,9 +100,9 @@ const FAQ = () => {
 
     return (
         <div className="faq-container">
-            <h1>Questions les plus courantes</h1>
+            <h1 className='title-faq'>Questions les plus courantes</h1>
 
-            <h2>Achat</h2>
+            <h2 className='subtitle-faq'>Achat</h2>
             <p>Toutes les questions concernant votre expérience d'achat.</p>
             <div className="faq-list">
                 {faqs.map((faq, index) => (
@@ -122,7 +122,7 @@ const FAQ = () => {
                 ))}
             </div>
 
-            <h2>Livraison et retour</h2>
+            <h2 className='subtitle-faq'>Livraison et retour</h2>
             <p>En savoir plus sur notre politique d'expédition et de retour.</p>
             <div className="faq-list">
                 {livraisonFaqs.map((faq, index) => (
@@ -143,7 +143,7 @@ const FAQ = () => {
             </div>
 
             <div className="customer-service">
-                <h2>Service Client</h2>
+                <h2 className='subtitle-faq'>Service Client</h2>
                 <p>
                     <i className="icon-customer-service" /> 
                     Notre service clientèle est disponible du lundi au dimanche de 8h à 20h30. 

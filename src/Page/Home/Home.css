@@ -1,49 +1,44 @@
-.container-header {
-    width: 100%;
-    max-height: 650px;
-    min-height: 450px;
-    position: relative; 
-    overflow: hidden;
-}
-
-.shadow {
-    position: absolute; 
-    top: 0;
-    left: 0;
+.container-header{
+    position: relative;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.2); 
-    z-index: 1; 
+    max-height: 650px;
+    min-height: 450px;
 }
 
-.imgBanner {
+.shadow{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.imgBanner{
     width: 100%;
     height: 100%;
     object-fit: cover;
+    max-height: 650px;
+    min-height: 450px;
 }
 
-.title-header {
-    color: white;
+.title-product-header{
+    color: #fff;
     font-family: var(--font-primary);
     font-size: 3.5rem;
     font-weight: 900;
     position: absolute;
+    left: 160px;
     bottom: 150px;
-    left: 90px; 
     width: 700px;
-    z-index: 2; 
-    opacity: 0;
-    transform: translateY(20px); 
-    animation: fadeInUp 2s forwards; 
 }
 
-.button-header {
-    position: absolute; 
+.button-product-header{
+    position: absolute;
     bottom: 50px;
-    left: 90px;
-    background-color: black;
+    left: 160px;
+    background-color: var(--color-primary);
     border-radius: 30px;
-    color: white; 
+    color: white;
     font-family: var(--font-primary);
     font-weight: 700;
     font-size: 1rem;
@@ -52,70 +47,59 @@
     justify-content: center;
     align-items: center;
     width: 160px;
-    text-decoration: none;
-    transition: background-color 0.3s ease;
 }
 
-.button-header:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Animation */
-@keyframes fadeInUp {
-    0% {
-        opacity: 0;
-        transform: translateY(20px);
+@media screen and (max-width:1530px) {
+    .title-product-header{
+        left: 100px;
     }
-    100% {
-        opacity: 1;
-        transform: translateY(0);
+
+    .button-product-header{
+        left: 100px;
     }
 }
 
-/* Media Queries */
-@media screen and (max-width: 1530px) {
-    .title-header, .button-header {
-        left: 80px; 
-    }
-}
-
-@media screen and (max-width: 1400px) {
-    .title-header {
+@media screen and (max-width:1400px) {
+    .title-product-header{
         font-size: 40px;
     }
 }
 
 @media screen and (max-width: 1360px) {
-    .title-header, .button-header {
-        left: 30px;
+    .title-product-header{
+        left: 50px;
+    }
+
+    .button-product-header{
+        left: 50px;
     }
 }
 
-@media screen and (max-width: 830px) {
-    .title-header {
+@media screen and (max-width:830px) {
+    .title-product-header{
         width: 600px;
     }
 }
 
-@media screen and (max-width: 700px) {
-    .title-header {
+@media screen and (max-width:700px) {
+    .title-product-header{
         font-size: 32px;
     }
 
-    .button-header {
+    .button-product-header{
         width: 140px;
         height: 54px;
         font-size: 14px;
     }
 }
 
-@media screen and (max-width: 652px) {
-    .title-header {
+@media screen and (max-width:652px) {
+    .title-product-header{
         width: 300px;
-        left: 10px;
+        left: 20px;
     }
 
-    .button-header {
-        left: 10px;
+    .button-product-header{
+        left: 20px;
     }
 }
