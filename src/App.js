@@ -11,6 +11,7 @@ import FAQ from './Page/FAQ/FAQ.jsx';
 import Contact from './Page/Contact/Contact.jsx';
 import Cart from './components/Cart/Cart.jsx';
 import Collection from './Page/Collection/Collection.jsx';
+import Product from './Page/Product/Product.jsx';
 
 
 
@@ -28,6 +29,7 @@ const App = () => {
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/Cart" element={<Cart />} /> 
+                    <Route path="/product/:id" element={<Product />} /> 
                 </Routes>
                 <Footer />
             </div>

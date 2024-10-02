@@ -22,4 +22,14 @@ export const apiService = {
         }
     },
 
+    //Récupère les produits par id
+    getProductById: async (id) => {
+        try {
+            const response = await fetch(`${BASE_URL}/product/${id}`);
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };

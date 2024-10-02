@@ -71,7 +71,7 @@ const ProductList = ({ category }) => {
       ) : (
         <div className="product-list">
           {products.map((product) => (
-            <Link to={product.url} key={product.id}>
+            <Link to={`/product/${product.id}`} key={product.id}>
               <div className="product">
                 <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} className="product-image" />
                 <div className="info-product">
