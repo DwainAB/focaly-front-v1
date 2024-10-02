@@ -1,15 +1,155 @@
-body {
-    padding-top: 100px;
+.navbar {
+    display: flex!important;
+    justify-content: space-between!important;
+    align-items: center!important;
+    padding: 25px 160px!important;
+    height: 60px!important;
+    position: relative!important;
+    font-family: 'Inter', sans-serif!important;
+    font-weight: 700!important;
+    font-size: 1rem!important;
+    flex-wrap: nowrap!important;
+    box-sizing: content-box!important;
+  }
+  
+  .navbar-logo img {
+    height: 78px;
+    width: 178px;
+  }
+  
+  .navbar-links {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .navbar-links a {
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--color-primary);
+  }
+  
+  .navbar-icons .material-symbols-outlined {
+    font-size: 24px;
+    margin-left: 20px;
+  }
+  
+  /* Hamburger button */
+  .hamburger {
+    display: none;
+    cursor: pointer;
+  }
+  
+  .hamburger .material-symbols-outlined {
+    font-size: 32px;
+  }
+  
+  /* Slide menu for mobile */
+  .slide-menu {
+    position: fixed;
+    top: 0;
+    left: -100%; /* Updated to slide from the left */
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    transition: left 0.3s ease; /* Transition will apply to the 'left' property */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  
+.icon-mobil span, .navbar-icons span{
+  font-size: 28px!important;
 }
 
-/* Header.css */
-@media (max-width: 768px) {
-    .navbar-nav .nav-link {
-        font-size: 0.9rem; /* Ajuster la taille de police sur les petits écrans */
-    }
-    
-    .navbar-brand img {
-        height: 60px; /* Réduire la taille du logo sur les petits écrans */
-    }
-}
+  .slide-menu.show {
+    left: 0; /* When menu is open, bring it into view from the left */
+  }
+  
+  .slide-menu-links {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+  
+  .slide-menu-links a {
+    color: #333;
+    text-decoration: none;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  /* Close icon */
+  .close-icon {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    cursor: pointer;
+  }
+  
+  .close-icon .material-symbols-outlined {
+    font-size: 36px;
+    color: #000000;
+  }
 
+  .icon-mobil{
+    display: none!important;
+  }
+
+  .logo-mobil{
+    display: none!important;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 1530px) {
+    .navbar {
+      padding: 25px 100px!important;
+    }
+  }
+  
+  @media (max-width: 1360px) {
+    .navbar {
+      padding: 25px 50px!important;
+    }
+  }
+  
+  @media (max-width: 1250px) {
+    .navbar {
+      padding: 25px 20px!important;
+    }
+  
+    .logo-desktop {
+      display: none;
+    }
+
+    .logo-mobil{
+      display: block !important;
+    }
+  
+    .icon-mobil {
+      display: block !important;
+    }
+  
+    .navbar-links,
+    .navbar-icons {
+      display: none;
+    }
+  
+    .hamburger {
+      display: block;
+    }
+  }
+
+  @media screen and (max-width:800px) {
+    .slide-menu-links a{
+      font-size: 20px;
+    }
+
+    .navbar-logo img{
+      width: 150px;
+      height: 70px;
+    }
+  }
+  

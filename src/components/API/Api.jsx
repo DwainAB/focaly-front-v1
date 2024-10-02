@@ -12,4 +12,14 @@ export const apiService = {
         }
     },
 
+    //Récupère les produits par catégorie
+    getProductsByCategory: async (category) => {
+        try {
+            const response = await fetch(`${BASE_URL}/products/category/${category}`);
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
+
 };
