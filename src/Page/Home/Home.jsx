@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Banner from '../../Assets/banner.png';
-import Produits from '../../components/Products/Products'; 
+import Bestseller from '../../components/Bestseller/Bestseller'; 
 import Carrousel from '../../components/Carrousel/Carrousel';
 import About from '../../components/About/About';
 import './Home.css'; 
@@ -17,7 +17,7 @@ const Home = () => {
             <h1 className="title-product-header">Louez un drone DJI pour 3,40€/jour</h1>
             <Link className="button-product-header" to="/">Je découvre</Link>
         </div>
-            <Produits /> 
+            <Bestseller /> 
             <Carrousel /> 
             <About /> 
         </>
