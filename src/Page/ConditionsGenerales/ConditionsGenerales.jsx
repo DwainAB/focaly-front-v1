@@ -5,7 +5,7 @@ import { InfoCircle, ExclamationTriangle } from 'react-bootstrap-icons';
 const ConditionsGenerales = () => {
     return (
         <Container className="my-5">
-            <h1 className="text-center mb-4">Conditions générales de location</h1>
+            <h1 className="text-center mb-4 title-conditions">Conditions générales de location</h1>
             <Card className="p-4 shadow-sm">
                 <Card.Body>
                     <Row>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import Header from './components/Header/Header';
+import './reset.css';
+import TopNavbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
 import Home from './Page/Home/Home.jsx'; 
 import SearchPage from './components/SearchPage/SearchPage.jsx';
@@ -22,7 +23,7 @@ const App = () => {
     return (
         <Router>
             <div>
-                <Header />
+                <TopNavbar />
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/search" element={<SearchPage />} /> 

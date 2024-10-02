@@ -4,9 +4,9 @@ import { Navbar, Nav } from 'react-bootstrap';
 import { Cart, Search } from 'react-bootstrap-icons';
 import { useNavigate } from 'react-router-dom';
 import logo from '../../Assets/FOCALY - LOGOTYPE N.png'; 
-import './Header.css';
+import './Navbar.css';
 
-const Header = () => {
+const TopNavbar = () => {
     const navigate = useNavigate();
 
     const handleSearchClick = () => {
@@ -55,4 +55,4 @@ const Header = () => {
     );
 };
 
-export default Header;
+export default TopNavbar;
