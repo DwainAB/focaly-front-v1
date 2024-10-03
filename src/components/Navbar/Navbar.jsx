@@ -106,13 +106,15 @@ const Navbar = () => {
           ) : searchResults.length > 0 ? (
             searchResults.map((product) => (
               <div key={product.id} className="container-search-results">
-                <div className="search-result-item">
-                  <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} /> 
-                  <div className="search-result-item-text">
-                    <p>{product.title}</p>
-                    <p>A partir de {product.price} €</p>
+                <Link onClick={closeSearch} to={`/product/${product.id}`}>
+                  <div className="search-result-item">
+                    <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} /> 
+                    <div className="search-result-item-text">
+                      <p style={{color: "#000"}}>{product.title}</p>
+                      <p>A partir de {product.price} €</p>
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
             ))
           ) : (

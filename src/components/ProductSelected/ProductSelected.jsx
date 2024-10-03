@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import "./ProductSelected.css";
 import { apiService } from '../API/Api.jsx';
+import Loader from "../Loader/Loader.jsx"; // Assurez-vous d'importer le composant Loader
 
 const ProductSelected = () => {
     const { id } = useParams();
@@ -10,15 +11,20 @@ const ProductSelected = () => {
     const descriptionRef = useRef(null);
     const includedRef = useRef(null);
     const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true); // État pour le chargement
 
     useEffect(() => {
+        setLoading(true); // Commence le chargement
         apiService.getProductById(id)
             .then(data => {
                 console.log('Données reçues du produit :', data);
                 setProduct(data);
+                setLoading(false); // Fin du chargement
             })
-            .catch(error => console.error('Erreur lors du chargement du produit :', error));
-
+            .catch(error => {
+                console.error('Erreur lors du chargement du produit :', error);
+                setLoading(false); // Fin du chargement même en cas d'erreur
+            });
     }, [id]);
 
     // Fonction pour ajuster la hauteur des sections
@@ -54,6 +60,11 @@ const ProductSelected = () => {
             }
         }
     }, [isIncludedOpen]);
+
+    // Affiche le loader si en cours de chargement
+    if (loading) {
+        return <Loader />; // Affiche le loader
+    }
 
     // Si le produit n'est pas trouvé, afficher un message d'erreur
     if (!product) {
