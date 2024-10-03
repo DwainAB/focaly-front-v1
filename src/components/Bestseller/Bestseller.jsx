@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Bestseller.css';
 import { apiService } from '../API/Api';
+import { Link } from 'react-router-dom';
 
 const Bestseller = () => {
     const [products, setProducts] = useState([]);
@@ -26,10 +27,12 @@ const Bestseller = () => {
 
             <div className="container-product-bestseller">
                 {products.map((product, index) => (
-                    <div key={index} className="product-bestseller">
-                        <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.name} />
-                        <p>{product.title} dès <br />{product.price.toFixed(2)}€/jours</p>
-                    </div>
+                    <Link to={`/product/${product.id}`}>
+                        <div key={index} className="product-bestseller">
+                            <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.name} />
+                            <p>{product.title} dès <br />{product.price.toFixed(2)}€/jours</p>
+                        </div>
+                    </Link>
                 ))}
             </div>
         </div>
