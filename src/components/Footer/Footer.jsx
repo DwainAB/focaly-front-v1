@@ -44,7 +44,7 @@ const Footer = () => {
                             value={email}
                             onChange={handleEmailChange}
                         />
-                        <button className="btn text-white" style={{ backgroundColor: "#F9973E" }}>Go</button>
+                        <button className="btn text-white" style={{ backgroundColor: "#1D1D1B" }}>Go</button>
                     </form>
                     {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>} 
                 </div>

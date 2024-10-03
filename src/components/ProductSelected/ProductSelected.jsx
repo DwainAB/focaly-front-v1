@@ -90,13 +90,17 @@ const ProductSelected = () => {
                     </div>
 
                     {/* Section Inclu dans la location */}
-                    <div className='container-collapse' onClick={() => toggleSection(includedRef, setIsIncludedOpen, isIncludedOpen)}>
-                        <p>Inclu dans la location</p>
-                        <p>{isIncludedOpen ? "-" : "+"}</p>
-                    </div>
-                    <div className={`collapse-content ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
-                        <p>Voici ce qui est inclus dans la location : chargeurs, accessoires, et autres équipements nécessaires.</p>
-                    </div>
+                    {product.include_in_retal !== null && (
+                        <>
+                            <div className='container-collapse' onClick={() => toggleSection(includedRef, setIsIncludedOpen, isIncludedOpen)}>
+                                <p>Inclu dans la location</p>
+                                <p>{isIncludedOpen ? "-" : "+"}</p>
+                            </div>
+                            <div className={`collapse-content ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
+                                <p>Voici ce qui est inclus dans la location : chargeurs, accessoires, et autres équipements nécessaires.</p>
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

@@ -106,7 +106,7 @@
     font-weight: 700;
     color: var(--color-primary);
     font-family: var(--font-primary);
-
+    margin-bottom: 0;
 }
 
 @media screen and (max-width:1400px) {

@@ -32,4 +32,14 @@ export const apiService = {
         }
     },
 
+    //Récupère les produits depuis la barre de recherche
+    getProductsBySearch: async (search) =>{
+        try{
+            const response = await fetch(`${BASE_URL}/products?search=${search}`);
+            return await response.json();
+        }catch(error){
+            throw error;
+        }
+    },
+
 };
