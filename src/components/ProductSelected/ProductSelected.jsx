@@ -96,7 +96,7 @@ const ProductSelected = () => {
                         <p>Description du produit</p>
                         <p>{isDescriptionOpen ? "-" : "+"}</p>
                     </div>
-                    <div className={`collapse-content ${isDescriptionOpen ? 'collapse-open' : ''}`} ref={descriptionRef}>
+                    <div className={`collapse-content-product ${isDescriptionOpen ? 'collapse-open' : ''}`} ref={descriptionRef}>
                         <p>{product.description}</p>
                     </div>
 
@@ -107,7 +107,7 @@ const ProductSelected = () => {
                                 <p>Inclu dans la location</p>
                                 <p>{isIncludedOpen ? "-" : "+"}</p>
                             </div>
-                            <div className={`collapse-content ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
+                            <div className={`collapse-content-product ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
                                 <p>Voici ce qui est inclus dans la location : chargeurs, accessoires, et autres équipements nécessaires.</p>
                             </div>
                         </>

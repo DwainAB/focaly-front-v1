@@ -60,7 +60,7 @@
     margin-bottom: 50px;
 }
 
-.collapse-content {
+.collapse-content-product {
     overflow: hidden;
     height: 0;
     transition: height 0.3s ease, padding 0.3s ease; /* Ajout de la transition pour le padding */
