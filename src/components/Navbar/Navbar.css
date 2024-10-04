@@ -224,7 +224,8 @@
   }
 
   .hamburger {
-    display: block;
+    display: flex;
+    gap: 10px;
   }
 }
 
@@ -236,13 +237,13 @@
     }
   }
   
-  @media (max-width: 1360px) {
+  @media (max-width: 1395px) {
     .navbar {
       padding: 25px 50px!important;
     }
   }
   
-  @media (max-width: 1250px) {
+  @media (max-width: 1295px) {
     .navbar {
       padding: 25px 20px!important;
     }
@@ -265,7 +266,7 @@
     }
   
     .hamburger {
-      display: block;
+      display: flex;
     }
   }
 
@@ -291,6 +292,15 @@
 
     .search-bar input{
       width: 75%;
+    }
+  }
+
+  @media screen and (max-width:400px) {
+
+
+    .navbar-logo img{
+      width: 120px;
+      height: 55px;
     }
   }
   

@@ -1,0 +1,97 @@
+.container-title-form{
+    position: relative;
+    width: 350px;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+.container-title-form span{
+    position: absolute;
+    left: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 44px;
+    font-weight: 900;
+}
+
+.container-title-form span{
+    cursor: pointer;
+}
+
+.title-registerAndSignup{
+    text-align: center;
+    font-family: var(--font-primary);
+    font-weight: 800;
+}
+
+.form-registerAndSignup{
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.container-registerAndSignup-input{
+    position: relative;
+}
+
+.container-registerAndSignup-input span{
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.container-registerAndSignup-input input{
+    width: 400px!important;
+    height: 50px;
+    border: 0;
+    border-bottom: 2px solid #c7c7c7;
+    padding-left: 50px;
+    outline: none;
+}
+
+.container-registerAndSignup-input input:focus{
+    border: 0;
+    border-bottom: 2px solid #c7c7c7;
+}
+
+.form-registerAndSignup button{
+    background-color: var(--color-primary);
+    color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    font-weight: 700;
+    margin-top: 50px;
+}
+
+.form-registerAndSignup p{
+    font-weight: 600;
+    font-family: var(--font-primary);
+}
+
+.form-registerAndSignup p:hover{
+    cursor: pointer;
+}
+
+@media screen and (max-width: 600px) {
+
+    .container-title-form span{
+        left: 0;
+    }
+}
+
+@media screen and (max-width: 500px) {
+    .container-registerAndSignup-input input{
+        width: 300px;
+    }
+
+    .container-title-form h1{
+        font-size: 24px;
+    }
+
+    .container-title-form span{
+        font-size: 34px;
+    }
+}

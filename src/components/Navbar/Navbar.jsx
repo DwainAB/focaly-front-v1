@@ -66,10 +66,12 @@ const Navbar = () => {
       <div className="navbar-icons">
         <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
         <Link to="/panier"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">shopping_basket</span></Link>
+        <Link to="/connexion"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">account_circle</span></Link>
       </div>
 
-      <div className="hamburger" onClick={toggleMenu}>
-        <span className="material-symbols-outlined">menu</span>
+      <div className="hamburger">
+        <span onClick={toggleMenu} className="material-symbols-outlined">menu</span>
+        <Link to="/connexion"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">account_circle</span></Link>
       </div>
 
       <div className={`slide-menu ${isOpen ? 'show' : ''}`}>

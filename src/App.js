@@ -12,7 +12,8 @@ import Contact from './Page/Contact/Contact.jsx';
 import Cart from './components/Cart/Cart.jsx';
 import Collection from './Page/Collection/Collection.jsx';
 import Product from './Page/Product/Product.jsx';
-
+import Login from './Page/Login/Login.jsx';
+import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
 
 
 const App = () => {
@@ -30,6 +31,8 @@ const App = () => {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/panier" element={<Cart />} /> 
                     <Route path="/product/:id" element={<Product />} /> 
+                    <Route path='/connexion' element={<Login/>}/>
+                    <Route path='/dashboard' element={<DashboardClient/>}/>
                 </Routes>
                 <Footer />
             </div>
