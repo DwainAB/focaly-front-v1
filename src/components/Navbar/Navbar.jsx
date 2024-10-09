@@ -9,6 +9,8 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isSticky, setIsSticky] = useState(false); 
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -27,14 +29,28 @@ const Navbar = () => {
   };
 
   useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
     if (searchTerm.trim() === '') {
-      setSearchResults([]); // Réinitialiser les résultats si le terme est vide
+      setSearchResults([]);
       return;
     }
 
     apiService.getProductsBySearch(searchTerm)
       .then(data => {
-        console.log('Données reçues du produit :', data);
         setSearchResults(data);
       })
       .catch(error => console.error('Erreur lors du chargement du produit :', error));
@@ -48,9 +64,32 @@ const Navbar = () => {
     }
   }, [isSearchOpen]);
 
+  const handleScroll = (e) => {
+    const container = e.target;
+    const scrollLeft = container.scrollLeft;
+    const width = container.clientWidth;
+    const newIndex = Math.round(scrollLeft / width);
+    setActiveSlide(newIndex);
+  };
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) {
+        setIsSticky(true);
+      } else {
+        setIsSticky(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
+
   return (
-    <nav className="navbar">
-      <div className="navbar-logo logo-desktop">
+    <nav className={`navbar ${isSticky ? 'sticky' : ''}`}>
+      <div className="navbar-logo">
         <Link to="/"><img src={logo} alt="Logo" /></Link>
       </div>
 
@@ -69,22 +108,29 @@ const Navbar = () => {
         <Link to="/connexion"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">account_circle</span></Link>
       </div>
 
-      <div className="hamburger">
-        <span onClick={toggleMenu} className="material-symbols-outlined">menu</span>
-        <Link to="/connexion"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">account_circle</span></Link>
+      <div className="hamburger" onClick={toggleMenu}>
+        <span className="material-symbols-outlined">menu</span>
       </div>
 
       <div className={`slide-menu ${isOpen ? 'show' : ''}`}>
         <div className="close-icon" onClick={closeMenu}>
           <span className="material-symbols-outlined">close</span>
         </div>
-        <div className="slide-menu-links">
+        <div className="slide-menu-links" onScroll={handleScroll}>
           <Link to="/collection/cameras-embarquée" onClick={closeMenu}>Caméras Embarquées</Link>
           <Link to="/collection/appareils-photos" onClick={closeMenu}>Appareils Photos</Link>
           <Link to="/collection/drones" onClick={closeMenu}>Drones</Link>
           <Link to="/collection/accessoires" onClick={closeMenu}>Accessoires</Link>
           <Link to="/collection/pack" onClick={closeMenu}>Pack</Link>
           <Link to="/collection/professionnels" onClick={closeMenu}>Pour les professionnels</Link>
+        </div>
+        <div className="pagination-dots">
+          {Array(6).fill().map((_, index) => (
+            <span
+              key={index}
+              className={`dot ${activeSlide === index ? 'active' : ''}`}
+            ></span>
+          ))}
         </div>
       </div>
 
@@ -97,11 +143,9 @@ const Navbar = () => {
             onChange={(e) => setSearchTerm(e.target.value)} 
           />
         </div>
-
         <div className="close-icon-search" onClick={closeSearch}>
           <span className="material-symbols-outlined">close</span>
         </div>
-
         <div className="search-results">
           {searchTerm.trim() === '' ? (
             <p>Rechercher votre produit</p>
@@ -123,15 +167,6 @@ const Navbar = () => {
             <p>Aucun résultat trouvé</p>
           )}
         </div>
-      </div>
-
-      <div className="navbar-logo logo-mobil">
-        <Link to="/"><img src={logo} alt="Logo" /></Link>
-      </div>
-
-      <div className="navbar-icons icon-mobil">
-        <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
-        <Link to="/panier"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">shopping_basket</span></Link>
       </div>
     </nav>
   );

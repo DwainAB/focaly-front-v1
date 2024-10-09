@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './Carrousel.css';
 import imgLucy from "../../Assets/lucy.png";
 import imgLenna from "../../Assets/lenna.png";
@@ -19,22 +19,47 @@ const Carrousel = () => {
 
     const [currentImage, setCurrentImage] = useState(0);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
+    const carouselRef = useRef(null);
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setIsTransitioning(true);
-            setTimeout(() => {
-                setCurrentImage((prevImage) =>
-                    prevImage === images.length - 1 ? 0 : prevImage + 1
-                );
-                setIsTransitioning(false);
-            }, 500); // Durée de la transition
+            handleNextImage();
         }, 5000); // Durée entre les images
         return () => clearInterval(interval);
     }, [images.length]);
 
+    useEffect(() => {
+        const handleScroll = () => {
+            if (carouselRef.current) {
+                const rect = carouselRef.current.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                
+                if (rect.top <= windowHeight * 0.75) {
+                    setIsVisible(true);
+                }
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    const handleNextImage = () => {
+        setIsTransitioning(true);
+        setTimeout(() => {
+            setCurrentImage((prevImage) =>
+                prevImage === images.length - 1 ? 0 : prevImage + 1
+            );
+            setIsTransitioning(false);
+        }, 500); // Durée de la transition
+    };
+
     return (
-        <div className="carousel">
+        <div 
+            className={`carousel ${isVisible ? 'visible' : ''}`}
+            ref={carouselRef}
+        >
             <div className="shadow"></div>
             <img
                 src={images[currentImage].src}
@@ -44,6 +69,9 @@ const Carrousel = () => {
             <div className="carousel-text">
                 <h2>{images[currentImage].text1}</h2>
                 <p>{images[currentImage].text2}</p>
+            </div>
+            <div className="carousel-indicator-wrapper">
+                {currentImage + 1}
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Button, Image, Card, Form } from 'react-bootstrap';
-import './Cart.css';  // Le fichier CSS personnalisé
+import './Cart.css';  
 
 const Cart = () => {
   const items = [

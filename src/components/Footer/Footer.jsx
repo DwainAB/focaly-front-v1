@@ -9,16 +9,15 @@ const Footer = () => {
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
-        setErrorMessage(''); 
+        setErrorMessage('');
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-
         const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
         if (!emailPattern.test(email)) {
-            setErrorMessage('L\'email est invalide.'); 
+            setErrorMessage('L\'email est invalide.');
         } else {
             console.log('Email soumis:', email);
             setEmail('');
@@ -27,31 +26,15 @@ const Footer = () => {
 
     const copyEmailToClipboard = () => {
         navigator.clipboard.writeText('contact@focaly.com');
-        alert('Email copié dans le presse-papiers !'); // Message de confirmation
+        alert('Email copié dans le presse-papiers !');
     };
 
     return (
         <footer className="footer bg-light py-5">
             <div className="container">
-
-                <div className="footer-newsletter newsletter-footer-mobile text-center mb-4">
-                    <h1 className="footer-title">Inscrivez-vous à la newsletter pour bénéficier de 5% de réductions</h1>
-                    <form onSubmit={handleSubmit} className="input-group mt-3">
-                        <input
-                            className="form-control"
-                            placeholder="Email"
-                            type="email"
-                            value={email}
-                            onChange={handleEmailChange}
-                        />
-                        <button className="btn text-white" style={{ backgroundColor: "#1D1D1B" }}>Go</button>
-                    </form>
-                    {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>} 
-                </div>
-
                 <div className="row justify-content-between">
-                    <div className="col-md-4 footer-newsletter newsletter-footer-desktop">
-                        <h1 className="footer-title">Inscrivez-vous à la newsletter pour bénéficier de 5% de réductions</h1>
+                    <div className="col-md-4">
+                        <h1 className="footer-title">Inscrivez-vous à la newsletter pour bénéficier de 5% de réduction</h1>
                         <form onSubmit={handleSubmit} className="input-group mt-3">
                             <input
                                 className="form-control"
@@ -60,9 +43,9 @@ const Footer = () => {
                                 value={email}
                                 onChange={handleEmailChange}
                             />
-                            <button className="btn text-white" style={{ backgroundColor: "#F9973E" }}>Go</button>
+                            <button className="btn text-white" style={{ backgroundColor: "#000000" }}>Go</button>
                         </form>
-                        {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>} 
+                        {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
                     </div>
 
                     <div className="col-md-2">
@@ -95,25 +78,24 @@ const Footer = () => {
                 <div className="container-icon-footer d-flex justify-content-between align-items-center mt-5">
                     <div className="container-social">
                         <a href="https://www.instagram.com/focaly_/" target="_blank" rel="noopener noreferrer">
-                            <Instagram size={20} color="#C13584" /> {/* Couleur Instagram */}
+                            <Instagram size={20} color="#000000" />
                         </a>
                         <a href="https://www.tiktok.com/@focalyfr" target="_blank" rel="noopener noreferrer">
-                            <Tiktok size={20} color="#69C9D0" /> {/* Couleur TikTok */}
+                            <Tiktok size={20} color="#000000" />
                         </a>
                         <button onClick={copyEmailToClipboard} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <Envelope size={20} color="#0072C6" /> {/* Couleur de l'icône d'email */}
+                            <Envelope size={20} color="#000000" />
                         </button>
                     </div>
 
                     <p className="mb-0">&copy; 2024 Focaly</p>
 
-                    <div className="container-method-pay d-flex gap-3">
-                        <FaCcVisa size="2em" color="#1A1F71" className="payment-icon" /> 
-                        <FaCcMastercard size="2em" color="#EB001B" className="payment-icon" /> 
-                        <FaCcMastercard size="2em" color="#F79E1B" className="payment-icon" /> 
-                        <FaCcPaypal size="2em" color="#0070BA" className="payment-icon" /> 
-                        <FaApplePay size="2em" color="#000000" className="payment-icon" /> 
-                        <FaCcAmex size="2em" color="#00B2A9" className="payment-icon" /> 
+                    <div className="container-method-pay d-flex justify-content-center align-items-center mt-4">
+                    <FaCcVisa size="2em" color="#1A1F71" className="payment-icon" />
+                    <FaCcMastercard size="2em" color="#EB001B" className="payment-icon" />
+                    <FaCcPaypal size="2em" color="#0070BA" className="payment-icon" />
+                    <FaApplePay size="2em" color="#000000" className="payment-icon" />
+                    <FaCcAmex size="2em" color="#00B2A9" className="payment-icon" />
                     </div>
                 </div>
             </div>

@@ -1,65 +1,95 @@
-.container-about{
+.container-about {
     display: flex;
     justify-content: center;
     gap: 20px;
     overflow-x: auto;
     overflow-y: hidden;
-    height: 600px;
+    height: auto; 
     scrollbar-width: none;
-    margin: 0 40px;
+    padding: 40px;
+    margin: 0 auto;
     margin-top: 50px;
+    background-color: #f9f9f9;
+    border-radius: 12px; 
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
 }
 
 .container-about::-webkit-scrollbar {
     display: none; 
 }
 
-.about-sujet{
+.about-sujet {
     display: flex;
     flex-direction: column;
     gap: 20px;
     align-items: center;
-    width: 280px;
-    min-width: 250px;
+    width: 100%; 
+    max-width: 280px; 
+    min-width: 200px; 
     text-align: center;
     font-family: var(--font-primary);
     padding: 20px;
-    box-sizing: content-box;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); 
+    scroll-snap-align: center;
+    transition: transform 0.3s ease-in-out;
 }
 
-.about-sujet h3{
-    font-size: 22px;
+.about-sujet:hover {
+    transform: scale(1.05); 
+}
+
+.about-sujet h3 {
+    font-size: 20px; 
     font-weight: 900;
     color: var(--color-primary);
+    margin-bottom: 10px; 
 }
 
-.about-sujet p, .about-sujet li{
-    font-size: 16px;
-    line-height: 30px;
+.about-sujet p, .about-sujet li {
+    font-size: 14px; 
+    line-height: 1.6; 
+    margin: 0; 
+    padding: 0; 
+    color: #555;
 }
 
+.image-container {
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0; 
+    border-radius: 50%; 
+    margin-bottom: 24px;
+    transition: background-color 0.3s;
+}
 
+.image-container:hover {
+    background-color: var(--color-primary-light); 
+}
 
-.about-sujet img{
+.about-sujet img {
     width: 44px;
     height: 44px;
     object-fit: cover;
-    margin-bottom: 24px;
 }
 
-.text-bold{
+.text-bold {
     font-weight: 700;
+    color: var(--color-primary);
 }
 
-@media screen and (max-width: 1400px) {
-    .about-sujet h3{
-        font-size: 18px;
+@media screen and (max-width: 768px) {
+    .container-about {
+        flex-direction: column;
+        gap: 30px;
+        padding: 20px;
     }
 
-}
-
-@media screen and (max-width: 1200px) {
-
-
-    
+    .about-sujet {
+        max-width: none; 
+    }
 }
