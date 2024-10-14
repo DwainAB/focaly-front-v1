@@ -12,12 +12,24 @@ const CustomCalendar = ({ onDateChange }) => {
     const startDate = range[0];
     const endDate = range[1];
 
+    startDate.setHours(0, 0, 0, 0);
+    endDate.setHours(0, 0, 0, 0);
+
     const differenceInTime = endDate - startDate;
     const differenceInDays = differenceInTime / (1000 * 3600 * 24);
 
-    if (differenceInDays >= 4) {
+    if (differenceInDays >= 3) {
       setDateRange(range);
       setErrorMessage('');
+
+            const selectedDates = {
+              debut: startDate.toISOString().split('T')[0],
+              fin: endDate.toISOString().split('T')[0]
+            };
+            
+            console.log('Dates sélectionnées :', selectedDates);
+
+
       if (onDateChange) {
         onDateChange(range);
       }
@@ -35,6 +47,18 @@ const CustomCalendar = ({ onDateChange }) => {
 
   return (
     <div className="custom-calendar-container">
+      <p>Chosissez vos dates de location (4jours minimum) </p>
+      <Calendar
+        onChange={handleDateChange}
+        value={dateRange}
+        selectRange={true}
+        minDate={new Date()}
+        navigationLabel={navigationLabel} 
+        prev2Label={null} 
+        next2Label={null} 
+        className="custom-calendar"
+      />
+
       <div className="calendar-inputs mb-3">
         <label htmlFor="start-date">Début de location :</label>
         <input
@@ -53,16 +77,7 @@ const CustomCalendar = ({ onDateChange }) => {
           className="form-control mb-2"
         />
       </div>
-      <Calendar
-        onChange={handleDateChange}
-        value={dateRange}
-        selectRange={true}
-        minDate={new Date()}
-        navigationLabel={navigationLabel} 
-        prev2Label={null} 
-        next2Label={null} 
-        className="custom-calendar"
-      />
+
       {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}
     </div>
   );

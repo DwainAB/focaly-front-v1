@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import "./ProductSelected.css";
 import { apiService } from '../API/Api.jsx';
 import Loader from "../Loader/Loader.jsx"; // Assurez-vous d'importer le composant Loader
+import Calendar from "../Calendar/Calendar.jsx";
 
 const ProductSelected = () => {
     const { id } = useParams();
@@ -100,7 +101,6 @@ const ProductSelected = () => {
                         <p>{product.description}</p>
                     </div>
 
-                    {/* Section Inclu dans la location */}
                     {product.include_in_retal !== null && (
                         <>
                             <div className='container-collapse' onClick={() => toggleSection(includedRef, setIsIncludedOpen, isIncludedOpen)}>
@@ -112,6 +112,8 @@ const ProductSelected = () => {
                             </div>
                         </>
                     )}
+
+                    <Calendar />
                 </div>
             </div>
         </div>

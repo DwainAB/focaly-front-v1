@@ -14,6 +14,15 @@
 .calendar-inputs {
     width: 100%;
     margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+abbr{
+    text-decoration: none!important;
+
+    &:hover{
+        cursor: default!important;
+    }
 }
 
 .custom-calendar {
@@ -54,8 +63,8 @@
 
 .react-calendar__tile--rangeStart,
 .react-calendar__tile--rangeEnd {
-    background-color: #666;
-    color: white;
+    background-color: #000!important;
+    color: white!important;
 }
 
 .react-calendar__tile--range {
