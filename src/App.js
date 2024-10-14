@@ -14,7 +14,7 @@ import Collection from './Page/Collection/Collection.jsx';
 import Product from './Page/Product/Product.jsx';
 import Login from './Page/Login/Login.jsx';
 import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
-
+import BookingPage from './Page/BookingPage/BookingPage.jsx'; 
 
 const App = () => {
     return (
@@ -33,6 +33,7 @@ const App = () => {
                     <Route path="/product/:id" element={<Product />} /> 
                     <Route path='/connexion' element={<Login/>}/>
                     <Route path='/dashboard' element={<DashboardClient/>}/>
+                    <Route path='/reservation' element={<BookingPage />} /> {/* Nouvelle route pour la réservation */}
                 </Routes>
                 <Footer />
             </div>
