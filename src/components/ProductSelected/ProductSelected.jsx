@@ -96,13 +96,26 @@ const ProductSelected = () => {
             price: price,
             quantity: calendarData.quantity,
             daysDifference: calendarData.daysDifference,
-            startDate: formatDate(calendarData.range[0]), // Utiliser la fonction de formatage
-            endDate: formatDate(calendarData.range[1]), // Utiliser la fonction de formatage
+            startDate: formatDate(calendarData.range[0]),
+            endDate: formatDate(calendarData.range[1]),
         };
     
         // Récupérer les articles existants dans le localStorage
         const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        
+    
+        // Vérifier si le produit existe déjà et si les dates se chevauchent
+        const isDateOverlap = existingCartItems.some(item => {
+            return item.product.id === product.id && 
+                ((cartItem.startDate >= item.startDate && cartItem.startDate <= item.endDate) || 
+                (cartItem.endDate >= item.startDate && cartItem.endDate <= item.endDate) || 
+                (cartItem.startDate <= item.startDate && cartItem.endDate >= item.endDate));
+        });
+    
+        if (isDateOverlap) {
+            alert("Les dates choisies se chevauchent avec un produit déjà dans le panier !");
+            return; // Empêche l'ajout si les dates se chevauchent
+        }
+    
         // Vérifier si le produit existe déjà dans le panier
         const existingItemIndex = existingCartItems.findIndex(item => 
             item.product.id === product.id && 
@@ -111,18 +124,16 @@ const ProductSelected = () => {
         );
     
         if (existingItemIndex !== -1) {
-            // Si le produit existe déjà et que les dates correspondent, augmenter la quantité
             existingCartItems[existingItemIndex].quantity += cartItem.quantity;
-            alert("La quantité de produit demandé à été modifié !")
+            alert("La quantité de produit demandé a été modifiée !");
         } else {
-            // Sinon, ajouter le nouvel article à la liste
             existingCartItems.push(cartItem);
-            alert("Le produit a bien été ajouté à votre panier !")
+            alert("Le produit a bien été ajouté à votre panier !");
         }
-        
+    
         // Enregistrer la nouvelle liste dans le localStorage
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
-        
+    
         console.log("Produit ajouté au panier :", cartItem);
     };
 
