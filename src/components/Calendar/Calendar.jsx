@@ -49,9 +49,11 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
   };
 
   const btnIncr = () =>{
-     setQuantity( quantity + 1)
-     if (dateRange[0] && dateRange[1]) {
-       onDateChange({range: dateRange, quantity: quantity + 1, daysDifference: daysDifference});
+     if (quantity < product.quantity) {
+       setQuantity( quantity + 1)
+       if (dateRange[0] && dateRange[1]) {
+         onDateChange({range: dateRange, quantity: quantity + 1, daysDifference: daysDifference});
+       }
      }
   }
 
@@ -65,6 +67,7 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
      }
   }
 
+  console.log("quantity:",product.quantity);
 
   return (
     <div className="custom-calendar-container">

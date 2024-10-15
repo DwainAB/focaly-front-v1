@@ -48,7 +48,7 @@ const Footer = () => {
                         {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
                     </div>
 
-                    <div className="col-md-2">
+                    <div className="col-md-2 li-footer ">
                         <h2 className="title-h2-footer">Nos collections</h2>
                         <ul className="list-unstyled">
                             <li><a href="/AppareilsPhotos" className="footer-link">Nos Appareils Photos</a></li>
@@ -59,7 +59,7 @@ const Footer = () => {
                         </ul>
                     </div>
 
-                    <div className="col-md-2">
+                    <div className="col-md-2 li-footer">
                         <h2 className="title-h2-footer">Informations</h2>
                         <ul className="list-unstyled">
                             <li><a href="/conditions-generales" className="footer-link">Conditions générales de location</a></li>
@@ -69,7 +69,7 @@ const Footer = () => {
                         </ul>
                     </div>
                     
-                    <div className="col-md-3">
+                    <div className="col-md-3 li-footer">
                         <h2 className="title-h2-footer">Focaly</h2>
                         <p>Chez Focaly, nous croyons en la puissance de la créativité. Nous mettons à votre disposition une vaste sélection d'équipements haut de gamme pour vous permettre de louer à moindre prix.</p>
                     </div>

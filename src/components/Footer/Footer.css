@@ -187,6 +187,10 @@
         align-items: center;
         margin-top: 30px;
     }
+
+    .li-footer{
+        text-align: center;
+    }
 }
 
 /* Mobile */
