@@ -1,7 +1,6 @@
 .custom-calendar-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
     width: 100%;
     max-width: 400px;
     margin: 0 auto;
@@ -9,6 +8,46 @@
     border-radius: 8px;
     background: #f9f9f9;
     font-family: 'Poppins', sans-serif;
+}
+
+.container-quantity{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.container-quantity p{
+    margin: 0;
+}
+
+.container-quantity-btn{
+    display: flex;
+    gap: 10px;
+    height: 30px;
+}
+
+.container-quantity-btn button{
+    height: 30px;
+    width: 30px;
+    border: 1px solid grey;
+    font-weight: 700;
+    transition: all .3s;
+
+    &:hover{
+        cursor: pointer;
+        background-color: #000;
+        color: #fff;
+    }
+}
+
+.price, .subtitle-calendar{
+    text-align: end;
+}
+
+.price{
+    font-weight: 700;
 }
 
 .calendar-inputs {

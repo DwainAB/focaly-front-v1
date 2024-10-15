@@ -12,7 +12,9 @@ const ProductSelected = () => {
     const descriptionRef = useRef(null);
     const includedRef = useRef(null);
     const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true); // État pour le chargement
+    const [loading, setLoading] = useState(true); 
+    const [calendarData, setCalendarData] = useState({ range: [new Date(), new Date()], quantity: 1 }); 
+    const [price, setPrice] = useState(0)
 
     useEffect(() => {
         setLoading(true); // Commence le chargement
@@ -72,6 +74,58 @@ const ProductSelected = () => {
         return <p>Produit non trouvé</p>;
     }
 
+    // Fonction pour gérer les données envoyées par le calendrier
+    const handleDateChange = (data) => {
+        setCalendarData(data);
+        console.log("Données du calendrier :", data);
+        const quantityAndDays = data.daysDifference * data.quantity
+        setPrice(quantityAndDays * product.price);
+    };
+
+    const formatDate = (date) => {
+        const d = new Date(date);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajouter un zéro devant si nécessaire
+        const day = String(d.getDate()).padStart(2, '0'); // Ajouter un zéro devant si nécessaire
+        return `${year}-${month}-${day}`;
+    };
+
+    const handleAddToCart = () => {
+        const cartItem = {
+            product: product,
+            price: price,
+            quantity: calendarData.quantity,
+            daysDifference: calendarData.daysDifference,
+            startDate: formatDate(calendarData.range[0]), // Utiliser la fonction de formatage
+            endDate: formatDate(calendarData.range[1]), // Utiliser la fonction de formatage
+        };
+    
+        // Récupérer les articles existants dans le localStorage
+        const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        
+        // Vérifier si le produit existe déjà dans le panier
+        const existingItemIndex = existingCartItems.findIndex(item => 
+            item.product.id === product.id && 
+            item.startDate === cartItem.startDate && 
+            item.endDate === cartItem.endDate
+        );
+    
+        if (existingItemIndex !== -1) {
+            // Si le produit existe déjà et que les dates correspondent, augmenter la quantité
+            existingCartItems[existingItemIndex].quantity += cartItem.quantity;
+            alert("La quantité de produit demandé à été modifié !")
+        } else {
+            // Sinon, ajouter le nouvel article à la liste
+            existingCartItems.push(cartItem);
+            alert("Le produit a bien été ajouté à votre panier !")
+        }
+        
+        // Enregistrer la nouvelle liste dans le localStorage
+        localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
+        
+        console.log("Produit ajouté au panier :", cartItem);
+    };
+
     return (
         <div>
             <div className="container-product-selected">
@@ -113,8 +167,9 @@ const ProductSelected = () => {
                         </>
                     )}
 
-                    <Calendar />
-                </div>
+                    <Calendar onDateChange={handleDateChange} price={price} product={product} />
+                    <button className='btn-add-to-cart' onClick={handleAddToCart}>Ajouter au panier</button>
+                    </div>
             </div>
         </div>
     );
