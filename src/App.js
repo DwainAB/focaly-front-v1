@@ -9,11 +9,11 @@ import ConditionsGenerales from './Page/ConditionsGenerales/ConditionsGenerales.
 import MentionsLegales from './Page/MentionsLegales/MentionsLegales.jsx';
 import FAQ from './Page/FAQ/FAQ.jsx';
 import Contact from './Page/Contact/Contact.jsx';
-import Cart from './components/Cart/Cart.jsx';
 import Collection from './Page/Collection/Collection.jsx';
 import Product from './Page/Product/Product.jsx';
 import Login from './Page/Login/Login.jsx';
 import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
+import ShoppingCart from './Page/ShoppingCart/ShoppingCart.jsx';
 
 const App = () => {
     return (
@@ -28,7 +28,7 @@ const App = () => {
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/faq" element={<FAQ />} />
                     <Route path="/contact" element={<Contact />} />
-                    <Route path="/panier" element={<Cart />} /> 
+                    <Route path="/panier" element={<ShoppingCart />} /> 
                     <Route path="/product/:id" element={<Product />} /> 
                     <Route path='/connexion' element={<Login/>}/>
                     <Route path='/dashboard' element={<DashboardClient/>}/>

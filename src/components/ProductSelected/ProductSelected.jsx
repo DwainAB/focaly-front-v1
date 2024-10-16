@@ -15,6 +15,8 @@ const ProductSelected = () => {
     const [loading, setLoading] = useState(true); 
     const [calendarData, setCalendarData] = useState({ range: [new Date(), new Date()], quantity: 1 }); 
     const [price, setPrice] = useState(0)
+    const [isAddToCartEnabled, setIsAddToCartEnabled] = useState(false); 
+
 
     useEffect(() => {
         setLoading(true); // Commence le chargement
@@ -78,8 +80,10 @@ const ProductSelected = () => {
     const handleDateChange = (data) => {
         setCalendarData(data);
         console.log("Données du calendrier :", data);
-        const quantityAndDays = data.daysDifference * data.quantity
+        const quantityAndDays = data.daysDifference * data.quantity;
         setPrice(quantityAndDays * product.price);
+        
+        setIsAddToCartEnabled(data.range[0] && data.range[1]);
     };
 
     const formatDate = (date) => {
@@ -173,13 +177,13 @@ const ProductSelected = () => {
                                 <p>{isIncludedOpen ? "-" : "+"}</p>
                             </div>
                             <div className={`collapse-content-product ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
-                                <p>Voici ce qui est inclus dans la location : chargeurs, accessoires, et autres équipements nécessaires.</p>
+                                <p>{product.include_in_retal}</p>
                             </div>
                         </>
                     )}
 
                     <Calendar onDateChange={handleDateChange} price={price} product={product} />
-                    <button className='btn-add-to-cart' onClick={handleAddToCart}>Ajouter au panier</button>
+                    <button className={`btn-add-to-cart ${!isAddToCartEnabled ? 'disabled' : ''}`} onClick={handleAddToCart} disabled={!isAddToCartEnabled}>Ajouter au panier</button> 
                     </div>
             </div>
         </div>

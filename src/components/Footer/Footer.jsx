@@ -83,9 +83,6 @@ const Footer = () => {
                         <a href="https://www.tiktok.com/@focalyfr" target="_blank" rel="noopener noreferrer">
                             <Tiktok size={20} color="#000000" />
                         </a>
-                        <button onClick={copyEmailToClipboard} style={{ background: 'none', border: 'none', cursor: 'pointer' }}>
-                            <Envelope size={20} color="#000000" />
-                        </button>
                     </div>
 
                     <p className="mb-0">&copy; 2024 Focaly</p>

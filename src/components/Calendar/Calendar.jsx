@@ -67,7 +67,6 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
      }
   }
 
-  console.log("quantity:",product.quantity);
 
   return (
     <div className="custom-calendar-container">

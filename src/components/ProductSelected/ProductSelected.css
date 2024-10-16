@@ -122,6 +122,10 @@
     }
 }
 
+.btn-add-to-cart.disabled {
+    cursor: default; 
+}
+
 @media screen and (max-width:1400px) {
     .container-product-selected-info h1{
         font-size: 32px;
