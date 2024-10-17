@@ -12,6 +12,37 @@
   box-sizing: content-box!important;
 }
 
+.navbar-icons .shopping-cart-container .material-symbols-outlined .notification-dot {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  height: 20px;
+  width: 20px;
+  background-color: #000;
+  color: white;
+  font-size: 13px;
+  font-weight: bold;
+  border-radius: 50%;
+  font-family: sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shopping-cart-container {
+  position: relative;
+  display: inline-block;
+}
+
+
+.container-search-results a{
+  color: #000!important;
+}
+
+.navbar-icon a{
+  position: relative
+}
+
 .navbar-logo img {
   height: 78px;
   width: 178px;
@@ -24,7 +55,7 @@
 
 .navbar-links a {
   text-decoration: none;
-  font-size: 18px;
+  font-size: 16px;
   color: var(--color-primary);
 }
 

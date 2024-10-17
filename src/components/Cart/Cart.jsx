@@ -1,17 +1,25 @@
 import React from 'react';
-import { Container, Row, Col, Button, Image, Card, Form } from 'react-bootstrap';
 import './Cart.css';  
-import Test from "../../Assets/FOCALY - LOGOTYPE N.png"
 
 const Cart = () => {
   const [cartItems, setCartItems] = React.useState([]);
+  const [totalPrice, setTotalPrice] = React.useState('')
 
   React.useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems'));
     if (items) {
       setCartItems(items);
+      let calculatePrice = 0;
+      // Utiliser 'items' au lieu de 'cartItems' pour le calcul
+      for (let i = 0; i < items.length; i++) {
+        calculatePrice += items[i].price;      
+      }
+      setTotalPrice(calculatePrice);
     }
   }, []);
+
+
+
 
   const handleRemoveItem = (index) => {
     const updatedItems = cartItems.filter((_, i) => i !== index);
@@ -19,7 +27,6 @@ const Cart = () => {
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
   };
 
-  console.log(cartItems);
 
 
   return (
@@ -52,7 +59,7 @@ const Cart = () => {
                 </div>
                 <div className="container-days-cart">
                   <p>{item.daysDifference}</p>
-                  <p onClick={() => handleRemoveItem(index)}>Supprimer</p> {/* Ajout de la fonction de suppression */}
+                  <p onClick={() => handleRemoveItem(index)}>Supprimer</p> 
                 </div>
                 <div className="container-price-cart">
                   <p>{item.price}€</p>
@@ -68,7 +75,7 @@ const Cart = () => {
 
           <div className="price">
             <p>Total</p>
-            <p>108,00€</p>
+            <p>{totalPrice}€</p>
           </div>
 
           <p className='taxe-price'>Taxes incluses. Frais d'expédition calculés à l'étape de paiement.</p>

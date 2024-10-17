@@ -109,9 +109,9 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
         />
       </div>
       {price === 0 ? (
-        <p className='price'>Prix total (TTC): {product.price * quantity}€</p>
+        <p className='price'>Prix total (TTC): {(product.price * quantity).toFixed(2)}€</p>
       ) : (
-        <p className='price'>Prix total (TTC): {price}€</p>
+        <p className='price'>Prix total (TTC): {parseFloat(price).toFixed(2)}€</p>
       )}
 
       {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}

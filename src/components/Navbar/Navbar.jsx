@@ -9,6 +9,7 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const [cartItemCount, setCartItemCount] = useState(0);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -24,6 +25,7 @@ const Navbar = () => {
 
   const closeSearch = () => {
     setIsSearchOpen(false);
+    setSearchTerm('')
   };
 
   useEffect(() => {
@@ -48,6 +50,31 @@ const Navbar = () => {
     }
   }, [isSearchOpen]);
 
+  useEffect(() => {
+    const updateCartCount = () => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      setCartItemCount(cartItems.length); 
+    };
+  
+    updateCartCount();
+  
+    window.addEventListener('storage', updateCartCount);
+  
+    return () => {
+      window.removeEventListener('storage', updateCartCount);
+    };
+  }, []);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+      setCartItemCount(cartItems.length);
+    }, 1000); 
+  
+    return () => clearInterval(interval); 
+  }, []);
+  
+
   return (
     <nav className="navbar">
       <div className="navbar-logo logo-desktop">
@@ -65,8 +92,17 @@ const Navbar = () => {
 
       <div className="navbar-icons">
         <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
-        <Link to="/panier"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">shopping_basket</span></Link>
-      </div>
+        <Link to="/panier" className="shopping-cart-container">
+          <span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">
+            shopping_basket
+            {cartItemCount > 0 && (
+              <div className="notification-dot">
+                {cartItemCount} 
+              </div>
+            )}
+          </span>
+        </Link>    
+        </div>
 
       <div className="hamburger" onClick={toggleMenu}>
         <span className="material-symbols-outlined">menu</span>
@@ -106,13 +142,15 @@ const Navbar = () => {
           ) : searchResults.length > 0 ? (
             searchResults.map((product) => (
               <div key={product.id} className="container-search-results">
-                <div className="search-result-item">
-                  <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} /> 
-                  <div className="search-result-item-text">
-                    <p>{product.title}</p>
-                    <p>A partir de {product.price} €</p>
+                <Link to={`http://localhost:3000/product/${product.id}`} onClick={closeSearch}>
+                  <div className="search-result-item">
+                    <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} /> 
+                    <div className="search-result-item-text">
+                      <p>{product.title}</p>
+                      <p>A partir de {product.price} €</p>
+                    </div>
                   </div>
-                </div>
+                </Link>
               </div>
             ))
           ) : (
@@ -127,7 +165,16 @@ const Navbar = () => {
 
       <div className="navbar-icons icon-mobil">
         <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
-        <Link to="/panier"><span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">shopping_basket</span></Link>
+        <Link to="/panier" className="shopping-cart-container">
+          <span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">
+            shopping_basket
+            {cartItemCount > 0 && (
+              <div className="notification-dot">
+                {cartItemCount} 
+              </div>
+            )}
+          </span>
+        </Link>
       </div>
     </nav>
   );

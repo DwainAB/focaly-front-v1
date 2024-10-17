@@ -4,7 +4,6 @@ import './reset.css';
 import TopNavbar from './components/Navbar/Navbar.jsx';
 import Footer from './components/Footer/Footer.jsx';
 import Home from './Page/Home/Home.jsx'; 
-import SearchPage from './components/SearchPage/SearchPage.jsx';
 import ConditionsGenerales from './Page/ConditionsGenerales/ConditionsGenerales.jsx';
 import MentionsLegales from './Page/MentionsLegales/MentionsLegales.jsx';
 import FAQ from './Page/FAQ/FAQ.jsx';
@@ -23,7 +22,6 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/collection/:categoryURL" element={<Collection/>}/>
-                    <Route path="/search" element={<SearchPage />} /> 
                     <Route path="/conditions-generales" element={<ConditionsGenerales />} />
                     <Route path="/mentions-legales" element={<MentionsLegales />} />
                     <Route path="/faq" element={<FAQ />} />
