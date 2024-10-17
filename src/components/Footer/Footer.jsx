@@ -24,13 +24,9 @@ const Footer = () => {
         }
     };
 
-    const copyEmailToClipboard = () => {
-        navigator.clipboard.writeText('contact@focaly.com');
-        alert('Email copié dans le presse-papiers !');
-    };
 
     return (
-        <footer className="footer bg-light py-5">
+        <footer className="footer">
             <div className="container">
                 <div className="row justify-content-between">
                     <div className="col-md-4">

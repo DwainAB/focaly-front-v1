@@ -142,7 +142,7 @@ const ProductSelected = () => {
     };
 
     return (
-        <div>
+        <div className='global-product-selected'>
             <div className="container-product-selected">
                 <div className="container-product-selected-img">
                     <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt="product" />

@@ -15,11 +15,15 @@
     margin-right: 160px !important;
     gap: 50px !important;
     flex-wrap: wrap !important;
+    margin-top: 50px;
 }
 
 .product {
     width: 100% !important;
     max-width: 460px !important;
+    border-radius: 10px;
+    background-color: #fff;
+    overflow: hidden;
 }
 
 .product-list img {

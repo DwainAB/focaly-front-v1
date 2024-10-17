@@ -3,13 +3,30 @@
   justify-content: space-between!important;
   align-items: center!important;
   padding: 25px 160px!important;
-  height: 60px!important;
-  position: relative!important;
+  height: 120px!important;
+  position: fixed!important;
   font-family: 'Inter', sans-serif!important;
   font-weight: 700!important;
   font-size: 1rem!important;
   flex-wrap: nowrap!important;
-  box-sizing: content-box!important;
+  box-sizing: border-box!important;
+  z-index: 999;
+  background-color: #F0F0F0;
+  width: 100%;
+  top: 0;
+}
+
+.navbar {
+  transition: top 0.3s; /* Pour une transition douce */
+}
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; /* Assurez-vous qu'elle est au-dessus des autres éléments */
+  background-color: white; /* Changez la couleur de fond si nécessaire */
 }
 
 .navbar-icons .shopping-cart-container .material-symbols-outlined .notification-dot {
