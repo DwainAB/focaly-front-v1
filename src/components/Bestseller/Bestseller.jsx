@@ -30,7 +30,7 @@ const Bestseller = () => {
                     <Link to={`/product/${product.id}`}>
                         <div key={index} className="product-bestseller">
                             <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.name} />
-                            <p>{product.title} dès <br />{product.price.toFixed(2)}€/jours</p>
+                            <p>{product.title} dès <br />{product.price}€/jours</p>
                         </div>
                     </Link>
                 ))}

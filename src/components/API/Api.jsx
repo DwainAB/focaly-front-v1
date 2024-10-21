@@ -42,4 +42,19 @@ export const apiService = {
         }
     },
 
+    getAccessories: async(id)=>{
+        try{
+            const response = await fetch(`${BASE_URL}/accessories/batch`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(id),
+            });
+            return await response.json();
+        }catch(error){
+            throw error;
+        }
+    }
+
 };

@@ -6,19 +6,33 @@ import Loader from "../Loader/Loader.jsx";
 
 const ProductList = ({ category }) => {
     const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true); // État pour le chargement
+    const [loading, setLoading] = useState(true); 
 
     useEffect(() => {
         setLoading(true); // Commence le chargement
-        apiService.getProductsByCategory(category)
-            .then(data => {
+        if(category !== "accessories"){
+            apiService.getProductsByCategory(category)
+                .then(data => {
+                    console.log('Produits reçus :', data); // Log des produits reçus
+                    setProducts(data);
+                    setLoading(false); // Fin du chargement
+                })
+                .catch(error => {
+                    console.error('Erreur lors du chargement des produits :', error);
+                    setLoading(false); // Fin du chargement même en cas d'erreur
+                });
+        }else{
+            apiService.getAccesories()
+            .then(data =>{
+                console.log("Accessoires reçu :", data);
                 setProducts(data);
-                setLoading(false); // Fin du chargement
+                setLoading(false)
             })
-            .catch(error => {
-                console.error('Erreur lors du chargement des produits :', error);
-                setLoading(false); // Fin du chargement même en cas d'erreur
-            });
+            .catch(error=>{
+                console.error("Erreur lors du chargement des accessoires : ", error)
+                setLoading(false)
+            })
+        }
     }, [category]);
 
     // Permet d'afficher un titre en fonction de la catégorie trouvée

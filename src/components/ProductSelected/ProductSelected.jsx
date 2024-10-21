@@ -80,17 +80,20 @@ const ProductSelected = () => {
     const handleDateChange = (data) => {
         setCalendarData(data);
         console.log("Données du calendrier :", data);
-        const quantityAndDays = data.daysDifference * data.quantity;
-        setPrice(quantityAndDays * product.price);
         
+        const daysDifference = Math.floor(data.daysDifference); 
+        const quantityAndDays = daysDifference * data.quantity;
+    
+        setPrice(quantityAndDays * product.price);
         setIsAddToCartEnabled(data.range[0] && data.range[1]);
     };
+    
 
     const formatDate = (date) => {
         const d = new Date(date);
         const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0'); // Ajouter un zéro devant si nécessaire
-        const day = String(d.getDate()).padStart(2, '0'); // Ajouter un zéro devant si nécessaire
+        const month = String(d.getMonth() + 1).padStart(2, '0'); 
+        const day = String(d.getDate()).padStart(2, '0'); 
         return `${year}-${month}-${day}`;
     };
 
