@@ -85,4 +85,20 @@ export const apiService = {
             throw error;
         }
     },
+
+    //Connexion d'un utilisateur
+    login: async (email, password) => {
+        try {
+            const response = await fetch(`${BASE_URL}/login`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email, password }),
+            });
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
 };
