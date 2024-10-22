@@ -10,7 +10,7 @@ import FAQ from './Page/FAQ/FAQ.jsx';
 import Contact from './Page/Contact/Contact.jsx';
 import Collection from './Page/Collection/Collection.jsx';
 import Product from './Page/Product/Product.jsx';
-import Login from './Page/Login/Login.jsx';
+import LoginPage from './Page/LoginPage/LoginPage.jsx';
 import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
 import ShoppingCart from './Page/ShoppingCart/ShoppingCart.jsx';
 
@@ -45,7 +45,7 @@ const App = () => {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/panier" element={<ShoppingCart />} /> 
                     <Route path="/product/:id" element={<Product />} /> 
-                    <Route path="/connexion" element={<Login />} />
+                    <Route path="/connexion" element={<LoginPage />} />
                     <Route path="/dashboard" element={<DashboardClient />} />
                 </Routes>
                 <iframe

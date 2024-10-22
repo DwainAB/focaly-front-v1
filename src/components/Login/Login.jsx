@@ -1,7 +1,7 @@
 import React from "react";
-import "./Register.css"
+import "./Login.css"
 
-function Register({onBack}){
+function Login({onBack}){
     return(
         <>
 
@@ -29,4 +29,4 @@ function Register({onBack}){
     )
 }
 
-export default Register
+export default Login

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Register from "../../components/Register/Register.jsx";
-import Signup from "../../components/Signup/Signup.jsx";
-import "./Login.css"
+import Login from "../../components/Login/Login.jsx"
+import Signup from "../../components/Signup/Signup.jsx"
+import "./LoginPage.css"
 
-function Login() {
+function LoginPage() {
     const navigate = useNavigate();
     const [showRegister, setShowRegister] = useState(false);
     const [showSignup, setShowSignup] = useState(false);
@@ -77,7 +77,7 @@ function Login() {
                 </>
             ) : (
                 <>
-                    {showRegister && <Register onBack={handleBack} />}
+                    {showRegister && <Login onBack={handleBack} />}
                     {showSignup && <Signup onBack={handleBack} />}
                 </>
             )}
@@ -85,4 +85,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginPage;

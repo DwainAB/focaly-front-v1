@@ -22,7 +22,7 @@ const ProductList = ({ category }) => {
                     setLoading(false); // Fin du chargement même en cas d'erreur
                 });
         }else{
-            apiService.getAccesories()
+            apiService.getAccessories()
             .then(data =>{
                 console.log("Accessoires reçu :", data);
                 setProducts(data);

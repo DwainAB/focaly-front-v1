@@ -85,7 +85,6 @@
   cursor: pointer;
 }
 
-/* Hamburger button */
 .hamburger {
   display: none;
   cursor: pointer;
@@ -314,6 +313,9 @@ color: #1a1a1ab3;
 
   .hamburger {
     display: block;
+    display: flex;
+    gap: 10px;
+    margin-right: 10px;
   }
 }
 

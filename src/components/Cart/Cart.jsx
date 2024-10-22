@@ -65,7 +65,7 @@ const Cart = () => {
   const fetchProductAccessories = async (title, accessoryIds) => {
     try {
       // Envoyer tous les IDs dans un seul appel
-      const accessories = await apiService.getAccessories({ ids: accessoryIds });
+      const accessories = await apiService.getAccessoriesBatch({ ids: accessoryIds });
       setProductAccessories(prev => ({
         ...prev,
         [title]: accessories

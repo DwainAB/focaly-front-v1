@@ -92,7 +92,8 @@ const Navbar = () => {
 
       <div className="navbar-icons">
         <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
-        <Link to="/panier" className="shopping-cart-container">
+        <Link style={{ color: "#1D1D1B" }} to="/connexion"><span class="material-symbols-outlined">person</span></Link>
+        <Link  to="/panier" className="shopping-cart-container">
           <span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">
             shopping_basket
             {cartItemCount > 0 && (
@@ -104,9 +105,13 @@ const Navbar = () => {
         </Link>    
         </div>
 
-      <div className="hamburger" onClick={toggleMenu}>
-        <span className="material-symbols-outlined">menu</span>
+      
+
+      <div className="hamburger">
+        <span onClick={toggleMenu} className="material-symbols-outlined">menu</span>
+        <Link style={{ color: "#1D1D1B" }} to="/connexion"><span class="material-symbols-outlined">person</span></Link>
       </div>
+      
 
       <div className={`slide-menu ${isOpen ? 'show' : ''}`}>
         <div className="close-icon" onClick={closeMenu}>

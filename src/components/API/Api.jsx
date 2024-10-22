@@ -42,7 +42,8 @@ export const apiService = {
         }
     },
 
-    getAccessories: async(id)=>{
+    //Récupère les accessoires en fonctions des ids de produit
+    getAccessoriesBatch: async(id)=>{
         try{
             const response = await fetch(`${BASE_URL}/accessories/batch`, {
                 method: 'POST',
@@ -55,6 +56,33 @@ export const apiService = {
         }catch(error){
             throw error;
         }
-    }
+    },
 
+    //Récupère tous les accessoires
+    getAccessories: async()=>{
+        try{
+            const response = await fetch(`${BASE_URL}/accessories`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+            return await response.json();
+        }catch(error){
+            throw error;
+        }
+    },
+
+    //Ajoute un utilisateur 
+    addUser: async (formData) => {
+        try {
+            const response = await fetch(`${BASE_URL}/add/user`, {
+                method: 'POST',
+                body: formData,
+            });
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
 };
