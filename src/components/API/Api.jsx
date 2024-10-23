@@ -86,6 +86,29 @@ export const apiService = {
         }
     },
 
+    updateUser: async(id, data) => {
+        try {
+            const response = await fetch(`${BASE_URL}/update/user/${id}`, {
+                method: 'PUT',
+                headers: {
+                    "Content-Type" : 'application/json'
+                },
+                body: JSON.stringify(data),
+            });
+            
+            console.log("Réponse serveur :", response); 
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP : ${response.status}`); 
+            }
+    
+            return response.json();
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour des informations :", error);
+            throw error;
+        }
+    },
+    
+
     //Connexion d'un utilisateur
     login: async (email, password) => {
         try {

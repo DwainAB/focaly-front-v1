@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import './reset.css';
 import TopNavbar from './components/Navbar/Navbar.jsx';
@@ -15,6 +15,8 @@ import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
 import ShoppingCart from './Page/ShoppingCart/ShoppingCart.jsx';
 
 const App = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null); // État pour vérifier la connexion
+
     useEffect(() => {
         const script1 = document.createElement('script');
         script1.type = 'text/javascript';
@@ -32,6 +34,20 @@ const App = () => {
         };
     }, []);
 
+
+    useEffect(() => {
+        const handleStorageChange = () => {
+            setIsLoggedIn(localStorage.getItem('token') !== null); 
+        };
+
+        window.addEventListener('storage', handleStorageChange);
+
+        return () => {
+            window.removeEventListener('storage', handleStorageChange);
+        };
+    }, []);
+
+
     return (
         <Router>
             <div>
@@ -45,8 +61,7 @@ const App = () => {
                     <Route path="/contact" element={<Contact />} />
                     <Route path="/panier" element={<ShoppingCart />} /> 
                     <Route path="/product/:id" element={<Product />} /> 
-                    <Route path="/connexion" element={<LoginPage />} />
-                    <Route path="/dashboard" element={<DashboardClient />} />
+                    <Route path="/compte" element={isLoggedIn ? <DashboardClient /> : <LoginPage />} /> 
                 </Routes>
                 <iframe
                     width="100%"

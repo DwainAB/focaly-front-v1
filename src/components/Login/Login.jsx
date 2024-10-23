@@ -15,6 +15,7 @@ function Login({onBack}){
             console.log(response.token);
             localStorage.setItem('token', response.token);
             localStorage.setItem('user', JSON.stringify(response.user));
+            window.dispatchEvent(new Event('storage'))
         } catch (error) {
             console.error(error);
         }

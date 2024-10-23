@@ -92,7 +92,7 @@ const Navbar = () => {
 
       <div className="navbar-icons">
         <span className="material-symbols-outlined" onClick={toggleSearch}>search</span>
-        <Link style={{ color: "#1D1D1B" }} to="/connexion"><span class="material-symbols-outlined">person</span></Link>
+        <Link style={{ color: "#1D1D1B" }} to="/compte"><span class="material-symbols-outlined">person</span></Link>
         <Link  to="/panier" className="shopping-cart-container">
           <span style={{ color: "#1D1D1B" }} className="material-symbols-outlined">
             shopping_basket
@@ -109,7 +109,7 @@ const Navbar = () => {
 
       <div className="hamburger">
         <span onClick={toggleMenu} className="material-symbols-outlined">menu</span>
-        <Link style={{ color: "#1D1D1B" }} to="/connexion"><span class="material-symbols-outlined">person</span></Link>
+        <Link style={{ color: "#1D1D1B" }} to="/compte"><span class="material-symbols-outlined">person</span></Link>
       </div>
       
 
