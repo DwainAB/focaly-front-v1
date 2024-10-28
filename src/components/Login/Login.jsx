@@ -25,18 +25,18 @@ function Login({onBack}){
         <>
 
             <div className="container-title-form">
-                <span class="material-symbols-outlined" onClick={onBack}>arrow_back</span>
+                <span className="material-symbols-outlined" onClick={onBack}>arrow_back</span>
                 <h1 className="title-registerAndSignup">Se connecter</h1>
             </div>
 
 
             <form className="form-registerAndSignup" onSubmit={handleSubmit}>
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">person</span>
+                    <span className="material-symbols-outlined">person</span>
                     <input placeholder="Email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">lock</span>
+                    <span className="material-symbols-outlined">lock</span>
                     <input placeholder="Mot de passe" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
                 </div>
 

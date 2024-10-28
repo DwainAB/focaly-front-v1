@@ -3,13 +3,16 @@ import { Link } from 'react-router-dom';
 import './Cart.css';  
 import LogoEmpty from "../../Assets/shopping-empty.png"
 import { apiService } from '../API/Api';
+import { useNavigate } from 'react-router-dom';
 
 const Cart = () => {
   const [cartItems, setCartItems] = React.useState([]);
   const [totalPrice, setTotalPrice] = React.useState('');
-  const [accessoryItems, setAccessoryItems] = React.useState([]); // État pour stocker les accessoires
+  const [accessoryItems, setAccessoryItems] = React.useState([]); 
   const [productAccessories, setProductAccessories] = React.useState({});
-  const [addedAccessoryQuantities, setAddedAccessoryQuantities] = React.useState({}); // Suivi des quantités d'accessoires
+  const [addedAccessoryQuantities, setAddedAccessoryQuantities] = React.useState({}); 
+  const [comment, setComment] = React.useState('')
+  const navigate = useNavigate()
 
   React.useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems'));
@@ -24,10 +27,32 @@ const Cart = () => {
     }
   }, []);
 
+  React.useEffect(() => {
+    if (cartItems.length > 0) {
+      const firstItem = cartItems[0];
+      const { startDate, endDate, daysDifference } = firstItem;
+  
+      // Calculer le totalPrice actualisé
+      const newTotalPrice = cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+  
+      // Mettre à jour la clé orderSummary dans le localStorage
+      localStorage.setItem('orderSummary', JSON.stringify({
+        totalPrice: newTotalPrice,
+        daysDifference,
+        startDate,
+        endDate,
+      }));
+    } else {
+      // Supprimer la clé si le panier est vide
+      localStorage.removeItem('orderSummary');
+    }
+  }, [cartItems]);
+  
+  
+
   const handleRemoveItem = (index) => {
     const removedItem = cartItems[index];
     
-    // Supprimer l'article du panier
     const updatedItems = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
@@ -96,7 +121,6 @@ const Cart = () => {
 
       if (existingAccessory) {
         if (existingAccessory.quantity < accessory.quantity) {
-          // Incrémenter la quantité si la limite n'est pas atteinte
           existingAccessory.quantity += 1;
           existingAccessory.price = parseFloat(accessory.price) * existingAccessory.quantity * parentItem.daysDifference;
 
@@ -108,14 +132,13 @@ const Cart = () => {
           const newTotalPrice = updatedCartItems.reduce((total, item) => total + item.price, 0);
           setTotalPrice(newTotalPrice.toFixed(2));
 
-          // Mettre à jour l'état des quantités ajoutées
           setAddedAccessoryQuantities(prev => ({
             ...prev,
             [accessory.id]: existingAccessory.quantity
           }));
         }
       } else {
-        // Ajouter un nouvel accessoire si pas encore dans le panier
+
         const newAccessoryItem = {
           product: accessory,
           startDate: parentItem.startDate,
@@ -140,7 +163,29 @@ const Cart = () => {
       }
     }
   };
+
+  const handleCommentChange = (event) => {
+    const newComment = event.target.value;
+    setComment(newComment);
+
+    if (newComment) {
+      localStorage.setItem('comment', newComment);
+    } else {
+      localStorage.removeItem('comment');
+    }
+  };
+
   
+  const handlePlaceOrder = () => {
+    if (comment) {
+      localStorage.setItem('comment', comment);
+    } else {
+      localStorage.removeItem('comment');
+    }
+
+    navigate('/paiement')
+  };
+
 
   return (
     <>
@@ -193,16 +238,16 @@ const Cart = () => {
               <p>{totalPrice}€</p>
             </div>
             <p className='taxe-price'>Taxes incluses. Frais d'expédition calculés à l'étape de paiement.</p>
-            <textarea placeholder='Note de commande' as="textarea" rows={3} resize="vertical"></textarea>
-            <div className='container-button-price'><button className='button-paiement'>Passer la commande</button></div>
-          </div>
+            <textarea placeholder='Note de commande' as="textarea" rows={3} resize="vertical" value={comment} onChange={handleCommentChange}></textarea>
+            <div className='container-button-price'>
+              <button onClick={handlePlaceOrder} className='button-paiement'>Passer la commande</button></div>
+            </div>
         )}
       </div>
 
       <div className="container-accessories">
         {cartItems.map((item, index) => (
-          // Vérifiez si l'item est un produit principal avant d'afficher les accessoires
-          item.product.category !== "accessories" && ( // Assurez-vous que ce n'est pas un accessoire
+          item.product.category !== "accessories" && ( 
             <div className="accessory-item" key={index}>
               <h3 className='title-section-accessories'>
                 Ajoutez vos accessoires en option <span className='title-accessory-bold'>({item.product.title})</span>:

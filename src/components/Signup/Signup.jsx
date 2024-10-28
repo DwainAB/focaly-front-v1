@@ -60,32 +60,32 @@ function Signup({ onBack }) {
         <>
 
             <div className="container-title-form">
-                <span class="material-symbols-outlined" onClick={onBack}>arrow_back</span>
+                <span className="material-symbols-outlined" onClick={onBack}>arrow_back</span>
                 <h1 className="title-registerAndSignup">S'inscrire</h1>
             </div>
 
             <form className="form-registerAndSignup" onSubmit={handleSubmit}>
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">person</span>
+                    <span className="material-symbols-outlined">person</span>
                     <input name="firstname" placeholder="Prénom" type="text" required />
                 </div>
                 {errors.firstname && <div className="error-message" style={{ color: 'red' }}>{errors.firstname}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">person</span>
+                    <span className="material-symbols-outlined">person</span>
                     <input name="lastname" placeholder="Nom" type="text" required />
                 </div>
                 {errors.lastname && <div className="error-message" style={{ color: 'red' }}>{errors.lastname}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">alternate_email</span>
+                    <span className="material-symbols-outlined">alternate_email</span>
                     <input name="email" placeholder="Email" type="email" required />
                 </div>
                 {errors.email && <div className="error-message" style={{ color: 'red' }}>{errors.email}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">lock</span>
+                    <span className="material-symbols-outlined">lock</span>
                     <input 
                         name="password" 
                         placeholder="Mot de passe" 
@@ -98,7 +98,7 @@ function Signup({ onBack }) {
 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">lock</span>
+                    <span className="material-symbols-outlined">lock</span>
                     <input 
                         placeholder="Confirmation mot de passe" 
                         type="password" 
@@ -109,25 +109,25 @@ function Signup({ onBack }) {
                 {errors.password && <div className="error-message" style={{ color: 'red' }}>{errors.password}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">flag</span>
+                    <span className="material-symbols-outlined">flag</span>
                     <input name="address" placeholder="Adresse" type="text" required />
                 </div>
                 {errors.address && <div className="error-message" style={{ color: 'red' }}>{errors.address}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">location_on</span>
+                    <span className="material-symbols-outlined">location_on</span>
                     <input name="zip_code" placeholder="Code Postal" type="text" required />
                 </div>
                 {errors.zip_code && <div className="error-message" style={{ color: 'red' }}>{errors.zip_code}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">location_city</span>
+                    <span className="material-symbols-outlined">location_city</span>
                     <input name="city" placeholder="Ville" type="text" required />
                 </div>
                 {errors.city && <div className="error-message" style={{ color: 'red' }}>{errors.city}</div>} 
 
                 <div className="container-registerAndSignup-input">
-                    <span class="material-symbols-outlined">lock</span>
+                    <span className="material-symbols-outlined">lock</span>
                     <input name="phone" placeholder="+33" type="text" required />
                 </div>
                 {errors.phone && <div className="error-message" style={{ color: 'red' }}>{errors.phone}</div>} 

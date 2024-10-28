@@ -1,0 +1,118 @@
+.container-payment{
+    display: flex;
+    padding: 0 20px;
+    width: 100%;
+    justify-content: space-between;
+    margin-bottom: 50px;
+}
+
+.title-payment{
+    text-align: center;
+    font-size: 28px;
+    font-family: var(--font-primary);
+    font-weight: 900;
+    margin-bottom: 50px;
+}
+
+.container-form-payment{
+    width: 50%;
+}
+
+.container-form-payment form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.container-form-payment form input{
+    background-color: #F0F0F0;
+    border: 0;
+    border-bottom: 2px solid grey;
+    padding: 5px 0 5px 10px;    
+    width: 250px;
+}
+
+.container-login h2, .container-form-payment h2{
+    font-size: 22px;
+    font-weight: 800;
+    font-family: var(--font-primary);
+    text-align: center;
+}
+
+.container-login p{
+    font-size: 14px;
+    width: 300px;
+    text-align: center;
+    margin: 0 auto;
+    margin-bottom: 50px;
+}
+
+.container-login{
+    width: 50%;
+    border-right: 2px solid grey
+}
+
+.container-button-connexion-payment{
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+}
+
+.container-button-connexion-payment button{
+    background-color: #000;
+    border: 0;
+    color: #F0F0F0;
+    padding: 5px 20px;
+    border-radius: 10px;
+}
+
+.container-form-connexion-payment form{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+    width: 250px;
+    margin: 0 auto;
+}
+
+.container-form-connexion-payment span{
+    position: absolute;
+    left: -50px;
+    z-index: 999;
+    &:hover{
+        cursor: pointer;
+    }
+}
+
+.container-form-connexion-payment input{
+    background-color: #F0F0F0;
+    border: 0;
+    border-bottom: 2px solid grey;
+    width: 250px;
+    padding: 5px 0 5px 10px;    
+}
+
+.container-form-connexion-payment button, .container-form-payment form button{
+    background-color: #000;
+    border: 0;
+    color: #F0F0F0;
+    padding: 5px 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 800px) {
+    .container-payment{
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .container-login{
+        border: 0;
+        border-bottom: 2px solid grey;
+        padding-bottom: 50px;
+        margin-bottom: 50px;
+    }
+}

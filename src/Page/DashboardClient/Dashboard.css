@@ -57,6 +57,34 @@
     margin-top: 20px;
 }
 
+.input-personnal-info{
+    background-color: #f0f0f0;
+    border: 0;
+    padding: 5px;
+    width: 250px;
+}
+
+.editing-mode{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input:focus{
+    outline: none;
+}
+
+.button-update{
+    background-color: #000;
+    border: 0;
+    color: #f0f0f0;
+    padding: 5px 20px;
+    border-radius: 5px;
+    display: block;
+    margin: 0 auto;
+    margin-top: 20px;
+}
+
 @media (max-width: 700px) {
 
     .title-dashboard{

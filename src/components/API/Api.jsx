@@ -124,4 +124,20 @@ export const apiService = {
             throw error;
         }
     },
+
+    //Envoyer une commande 
+    sendOrder: async (data)=>{
+        try{
+            const response = await fetch(`${BASE_URL}/add/order`, {
+                method: "POST",
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            });
+            return await response.json();
+        }catch(error){
+            throw error;
+        }
+    }
 };

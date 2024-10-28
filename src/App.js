@@ -13,6 +13,7 @@ import Product from './Page/Product/Product.jsx';
 import LoginPage from './Page/LoginPage/LoginPage.jsx';
 import DashboardClient from './Page/DashboardClient/DashboardClient.jsx';
 import ShoppingCart from './Page/ShoppingCart/ShoppingCart.jsx';
+import PaymentPage from './Page/payment/payment.jsx';
 
 const App = () => {
     const [isLoggedIn, setIsLoggedIn] = useState(localStorage.getItem('token') !== null); // État pour vérifier la connexion
@@ -62,6 +63,7 @@ const App = () => {
                     <Route path="/panier" element={<ShoppingCart />} /> 
                     <Route path="/product/:id" element={<Product />} /> 
                     <Route path="/compte" element={isLoggedIn ? <DashboardClient /> : <LoginPage />} /> 
+                    <Route path="/paiement" element={<PaymentPage/>} /> 
                 </Routes>
                 <iframe
                     width="100%"
