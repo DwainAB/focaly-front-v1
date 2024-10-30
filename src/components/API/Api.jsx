@@ -139,5 +139,14 @@ export const apiService = {
         }catch(error){
             throw error;
         }
+    },
+
+    getOrderByClient: async (id)=>{
+        try {
+            const response = await fetch(`${BASE_URL}/order/client/${id}`);
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
     }
 };

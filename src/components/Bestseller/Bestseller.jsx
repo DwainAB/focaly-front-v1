@@ -27,8 +27,8 @@ const Bestseller = () => {
 
             <div className="container-product-bestseller">
                 {products.map((product, index) => (
-                    <Link to={`/product/${product.id}`}>
-                        <div key={index} className="product-bestseller">
+                    <Link key={index} to={`/product/${product.id}`}>
+                        <div className="product-bestseller">
                             <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.name} />
                             <p>{product.title} dès <br />{product.price}€/jours</p>
                         </div>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Loader from "../../components/Loader/Loader";
 import { apiService } from "../../components/API/Api";
+import { Link } from "react-router-dom";
 import "./Dashboard.css"
 
 function DashboardClient() {
@@ -9,6 +10,7 @@ function DashboardClient() {
     const [userInfo, setUserInfo] = useState(null);
     const [isEditing, setIsEditing] = useState(false); 
     const [editedUserInfo, setEditedUserInfo] = useState(null); 
+    const [orders, setOrders] = useState([])
 
     useEffect(() => {
         const user = localStorage.getItem('user');
@@ -22,6 +24,31 @@ function DashboardClient() {
             setEditedUserInfo(parsedUser); 
         }
     }, [navigate]);
+
+    useEffect(()=>{
+        const getOrderClient= async (id)=>{
+            try{
+
+                const response = await apiService.getOrderByClient(id);
+                if(response){
+                setOrders(response)
+                }
+
+            }catch(error){
+                console.error("Erreur lors de la récupératin des commandes:", error);
+            }
+        }
+
+        if(userInfo){
+            console.log(userInfo);
+            getOrderClient(userInfo.id)
+        }
+
+        if(orders){
+            console.log(orders);
+        }
+
+    },[userInfo])
 
     const clearLocalStorage = () => {
         localStorage.removeItem('user');
@@ -216,7 +243,26 @@ function DashboardClient() {
                             <div className="container-title-order">
                                 <h2>Mes commandes</h2>
                             </div>
-                            <p className="text-order-empty">Pas encore de commande</p>
+                            {orders.length === 0 ? (
+                                <p className="text-order-empty">Pas encore de commande</p>
+                            ) : (
+                                <div className="container-list-order">
+                                    {orders.map(order => (
+                                        <Link key={order.id} className="order-item">
+
+                                            <div className="container-left-order-item">
+                                                <p>{order.refOrder}</p>
+                                                <p>{order.totalPrice} €</p>
+                                            </div>
+                                            <div className="container-right-order-item">
+                                                <p>{new Date(order.startDate).toLocaleDateString('fr-FR')}</p>
+                                                <p>{new Date(order.endDate).toLocaleDateString('fr-FR')}</p>
+                                            </div>
+
+                                        </Link>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>

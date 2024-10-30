@@ -1,39 +1,42 @@
 import React, { useState, useEffect } from "react";
 import { apiService } from "../../components/API/Api";
+import { loadStripe } from '@stripe/stripe-js'; // Importer loadStripe
 import "./payment.css";
+
+const stripePromise = loadStripe('pk_test_51QFBXUKCe2DCFNsw7AdtEHll0dUAI8iacDaSZlYBqjeyTm6WF1ZOnyPiPMQvM594Pu0ZFZOd1mkso3yM95Aoyzwa00x5JYK6WH'); // Remplacez par votre clé publique Stripe
 
 function Payment() {
     const [connexion, setConnexion] = useState(false);
     const [userConnected, setUserConnected] = useState({});
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [comment, setComment] = useState('')
+    const [comment, setComment] = useState('');
     
     const [orderSummary, setOrderSummary] = useState({
         totalPrice: '',
         endDate: '',
         startDate: '',
-        daysDifference:''
-    })
+        daysDifference: ''
+    });
 
     const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         const getUserConnected = JSON.parse(localStorage.getItem("user"));
-        const getSummaryOrder = JSON.parse(localStorage.getItem("orderSummary"))
-        const getComment = localStorage.getItem('comment')
+        const getSummaryOrder = JSON.parse(localStorage.getItem("orderSummary"));
+        const getComment = localStorage.getItem('comment');
 
-        if(getComment){
-            setComment(getComment)
+        if (getComment) {
+            setComment(getComment);
         }
 
-        if(getSummaryOrder){
+        if (getSummaryOrder) {
             setOrderSummary({
                 totalPrice: getSummaryOrder.totalPrice,
                 daysDifference: getSummaryOrder.daysDifference,
                 startDate: getSummaryOrder.startDate,
                 endDate: getSummaryOrder.endDate
-            })
+            });
         }
 
         if (getUserConnected) {
@@ -48,9 +51,11 @@ function Payment() {
             title: item.product.title,
             images: item.product.images,
             price: item.price,
-            quantity: item.quantity
+            quantity: item.quantity,
+            startDate: item.startDate,
+            endDate: item.endDate
         }));
-        setCartItems(items)
+        setCartItems(items);
     }, []);
 
     const handleSubmitLogin = async (event) => {
@@ -76,10 +81,11 @@ function Payment() {
         }));
     };
 
-    const sendOrder = async (event) => {
+
+    const handlePayment = async (event) => {
         event.preventDefault();
         const order = {
-            clientId: userConnected.id ? userConnected.id : null, 
+            clientId: userConnected.id ? userConnected.id : null,
             firstname: userConnected.firstname,
             lastname: userConnected.lastname,
             email: userConnected.email,
@@ -87,24 +93,45 @@ function Payment() {
             address: userConnected.address,
             zipCode: userConnected.zip_code,
             city: userConnected.city,
-            totalPrice: orderSummary.totalPrice, 
-            rentalDays: orderSummary.daysDifference, 
-            startDate: orderSummary.startDate, 
-            endDate: orderSummary.endDate, 
-            comment: comment ? comment : null, 
-            products: cartItems
+            totalPrice: orderSummary.totalPrice,
+            rentalDays: orderSummary.daysDifference,
+            startDate: orderSummary.startDate,
+            endDate: orderSummary.endDate,
+            comment: comment ? comment : null,
+            products: cartItems,
         };
     
-        // Log pour déboguer
-        console.log("Order to be sent:", order);
-    
         try {
-            await apiService.sendOrder(order);
-            console.log("Commande envoyée !");
+            // Créer une session de paiement Stripe
+            const response = await fetch('http://localhost:8000/api/create-checkout-session', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(order),
+            });
+    
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(`Erreur lors de la création de la session : ${JSON.stringify(errorData)}`);
+            }
+    
+            const session = await response.json();
+            const stripe = await stripePromise;
+            
+            // Rediriger vers Stripe Checkout
+            const { error } = await stripe.redirectToCheckout({
+                sessionId: session.id
+            });
+    
+            if (error) {
+                console.error("Erreur lors de la redirection vers Stripe Checkout :", error);
+            }
         } catch (error) {
-            console.error("Erreur lors de l'envoi de la commande :", error);
+            console.error("Erreur lors du traitement du paiement :", error);
         }
     };
+    
     
 
     return (
@@ -145,7 +172,7 @@ function Payment() {
 
                 <div className="container-form-payment">
                     <h2 style={{ marginBottom: 50 }}>Information de livraison</h2>
-                    <form onSubmit={sendOrder}>
+                    <form onSubmit={handlePayment}>
                         <input 
                             type="text" 
                             name="firstname" 

@@ -25,13 +25,13 @@
     background-color: #fff;
     overflow: hidden;
     height: 100%;
-    max-height: 570px;
+    max-height: 460px;
 }
 
 .product-list img {
     width: 100% !important;
     max-width: 450px !important;
-    max-height: 450px !important;
+    max-height: 360px !important;
     object-fit: cover !important;
 }
 
@@ -45,14 +45,15 @@
     line-height: 0 !important;
 }
 
-.product .info-product .title-product {
+.product .info-product .title-product-collection {
     font-weight: 800 !important;
     font-size: 16px !important;
     margin: 0 !important;
 }
 
-.product .info-product .price-product {
+.product .info-product .price-product-collection {
     color: #1a1a1ab3;
+    font-size: 14px;
 }
 
 /*---------Partie qui gère le formulaire pour les professionnels---------*/
@@ -151,12 +152,22 @@
     .container-form-professional h2 {
         font-size: 32px !important;
     }
+
+    .product-list img {
+        width: 350px !important;
+        max-height: 360px !important;
+    }
 }
 
 @media screen and (max-width: 1200px) {
     .product-list {
         margin-left: 50px !important;
         margin-right: 50px !important;
+    }
+
+    .product-list img {
+        width: 350px !important;
+        max-height: 360px !important;
     }
 }
 
@@ -168,7 +179,7 @@
 
     .product-list img {
         width: 350px !important;
-        height: 350px !important;
+        max-height: 360px !important;
     }
 
     .product {
@@ -185,7 +196,7 @@
 @media screen and (max-width: 790px) {
     .product-list img {
         max-width: 450px !important;
-        max-height: 450px !important;
+        max-height: 360px !important;
         width: 100% !important;
     }
 

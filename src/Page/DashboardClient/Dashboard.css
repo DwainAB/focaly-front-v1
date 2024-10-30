@@ -85,6 +85,40 @@ input:focus{
     margin-top: 20px;
 }
 
+.container-list-order{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin-top: 30px;
+}
+
+.order-item{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    background-color: #F0F0F0;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.container-left-order-item p, .container-right-order-item p{
+    margin: 0;
+    color: #000;
+}
+
+.container-left-order-item p:nth-child(1){
+    font-weight: 800;
+}
+
+@media (max-width: 800px) {
+
+    .container-list-order{
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+
+}
+
 @media (max-width: 700px) {
 
     .title-dashboard{
@@ -93,6 +127,15 @@ input:focus{
 
     .container-title-personnal-info h2{
         font-size: 17px;
+    }
+
+
+}
+
+@media (max-width: 450px) {
+
+    .container-list-order{
+        grid-template-columns: repeat(1, 1fr);
     }
 
 

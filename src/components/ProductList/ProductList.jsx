@@ -98,8 +98,8 @@ const ProductList = ({ category }) => {
                             <div className="product">
                                 <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} className="product-image" />
                                 <div className="info-product">
-                                    <h2 className="title-product">{product.title}</h2>
-                                    <p className="price-product">À partir de {product.price}€</p>
+                                    <h2 className="title-product-collection">{product.title}</h2>
+                                    <p className="price-product-collection">À partir de {product.price}€</p>
                                 </div>
                             </div>
                         </Link>
