@@ -10,7 +10,14 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [daysDifference, setDaysDifference] = useState(0); 
   const [unavailableDates, setUnavailableDates] = useState([]);
 
-  // Fetch unavailable dates on dateRange change
+  // Fonction pour ajouter 4 jours à la date de fin
+  const addFourDays = (date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() + 4);  // Ajoute 4 jours
+    return newDate;
+  };
+
+  // Fetch unavailable dates and extend them by 4 days
   useEffect(() => {
     const getDateUnavailable = async () => {
       try {
@@ -19,8 +26,18 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
           throw new Error(`Erreur lors de la récupération des dates : ${response.status}`);
         }
         const dateUnavailable = await response.json();
-        setUnavailableDates(dateUnavailable);
-        console.log("Dates indisponibles :", dateUnavailable);
+
+        // Augmenter de 4 jours la date de fin pour chaque plage bloquée
+        const extendedUnavailableDates = dateUnavailable.map(range => {
+          const extendedEndDate = addFourDays(range.endDate);  // Ajoute 4 jours à la date de fin
+          return {
+            ...range,
+            endDate: extendedEndDate.toISOString().split('T')[0]  // Formatage pour garder uniquement la date
+          };
+        });
+
+        setUnavailableDates(extendedUnavailableDates);
+        console.log("Dates bloquées étendues :", extendedUnavailableDates);
         
       } catch (error) {
         console.error(error);
@@ -29,6 +46,17 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
     getDateUnavailable();
   }, [dateRange]); 
+
+  // Fonction pour vérifier si une plage de dates sélectionnée chevauche les dates bloquées
+  const isDateUnavailable = (startDate, endDate) => {
+    return unavailableDates.some(range => {
+      const startBlocked = new Date(range.startDate);
+      const endBlocked = new Date(range.endDate);
+
+      // Vérifie si la plage sélectionnée chevauche la plage bloquée
+      return (startDate < endBlocked && endDate > startBlocked);
+    });
+  };
 
   const handleDateChange = (range) => {
     const startDate = range[0];
@@ -42,38 +70,27 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     setDaysDifference(differenceInDays);
 
     if (differenceInDays >= 4) {
-      setDateRange(range);
-      setDaysDifference(differenceInDays);
-      setErrorMessage('');
+      // Vérifier si la plage sélectionnée chevauche des dates bloquées
+      if (isDateUnavailable(startDate, endDate)) {
+        setErrorMessage('Les dates sélectionnées chevauchent des dates indisponibles. Veuillez choisir une autre plage.');
+      } else {
+        setDateRange(range);
+        setDaysDifference(differenceInDays);
+        setErrorMessage('');
 
-      const selectedDates = {
-        debut: startDate.toISOString().split('T')[0],
-        fin: endDate.toISOString().split('T')[0]
-      };
+        const selectedDates = {
+          debut: startDate.toISOString().split('T')[0],
+          fin: endDate.toISOString().split('T')[0]
+        };
 
-      if (onDateChange) {
-        onDateChange({ range, quantity, daysDifference: differenceInDays });
+        if (onDateChange) {
+          onDateChange({ range, quantity, daysDifference: differenceInDays });
+        }
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
     }
   };
-
- // Vérifier si une date est dans l'une des plages de dates indisponibles
-const isDateUnavailable = (date) => {
-  return unavailableDates.some(range => {
-    const start = new Date(range.startDate);
-    const end = new Date(range.endDate);
-
-    // Ajouter un jour à la fin de la date de fin pour inclure le dernier jour
-    start.setDate(start.getDate() - 1);
-
-    // Inclure toutes les dates entre start et end, y compris start et end
-    return date >= start && date < end; // Le "date < end" garantit que la fin est incluse
-  });
-};
-
-  
 
   const navigationLabel = ({ date, view }) => {
     if (view === 'month') {
@@ -120,7 +137,7 @@ const isDateUnavailable = (date) => {
         prev2Label={null}
         next2Label={null}
         className="custom-calendar"
-        tileDisabled={({ date }) => isDateUnavailable(date)} // Désactive les dates dans la plage d'indisponibilité
+        tileDisabled={({ date }) => isDateUnavailable(date, date)} // Désactive les dates dans la plage d'indisponibilité
       />
 
       <div className="calendar-inputs mb-3">
