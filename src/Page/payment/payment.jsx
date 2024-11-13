@@ -103,7 +103,7 @@ function Payment() {
     
         try {
             // Créer une session de paiement Stripe
-            const response = await fetch('http://localhost:8000/api/create-checkout-session', {
+            const response = await fetch('https://focaly-service.in/public/api/create-checkout-session', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

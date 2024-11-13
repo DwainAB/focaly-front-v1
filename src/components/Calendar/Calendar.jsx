@@ -1,14 +1,34 @@
-// components/Calendar/Calendar.jsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Calendar.css';
 
-const CustomCalendar = ({ onDateChange, price, product }) => {
+const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState('');
-  const [quantity, setQuantity] = useState(1)
-  const [daysDifference, setDaysDifference] = useState(0); // Ajout de l'état pour la différence de jours
+  const [quantity, setQuantity] = useState(1);
+  const [daysDifference, setDaysDifference] = useState(0); 
+  const [unavailableDates, setUnavailableDates] = useState([]);
+
+  // Fetch unavailable dates on dateRange change
+  useEffect(() => {
+    const getDateUnavailable = async () => {
+      try {
+        const response = await fetch(`https://focaly-service.in/public/api/orders/dates/${productId}`);
+        if (!response.ok) {
+          throw new Error(`Erreur lors de la récupération des dates : ${response.status}`);
+        }
+        const dateUnavailable = await response.json();
+        setUnavailableDates(dateUnavailable);
+        console.log("Dates indisponibles :", dateUnavailable);
+        
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getDateUnavailable();
+  }, [dateRange]); 
 
   const handleDateChange = (range) => {
     const startDate = range[0];
@@ -23,23 +43,37 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
 
     if (differenceInDays >= 4) {
       setDateRange(range);
-      setDaysDifference(differenceInDays);  
+      setDaysDifference(differenceInDays);
       setErrorMessage('');
 
-            const selectedDates = {
-              debut: startDate.toISOString().split('T')[0],
-              fin: endDate.toISOString().split('T')[0]
-            };
-            
-
+      const selectedDates = {
+        debut: startDate.toISOString().split('T')[0],
+        fin: endDate.toISOString().split('T')[0]
+      };
 
       if (onDateChange) {
-        onDateChange({ range, quantity, daysDifference: differenceInDays});
+        onDateChange({ range, quantity, daysDifference: differenceInDays });
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
     }
   };
+
+ // Vérifier si une date est dans l'une des plages de dates indisponibles
+const isDateUnavailable = (date) => {
+  return unavailableDates.some(range => {
+    const start = new Date(range.startDate);
+    const end = new Date(range.endDate);
+
+    // Ajouter un jour à la fin de la date de fin pour inclure le dernier jour
+    start.setDate(start.getDate() - 1);
+
+    // Inclure toutes les dates entre start et end, y compris start et end
+    return date >= start && date < end; // Le "date < end" garantit que la fin est incluse
+  });
+};
+
+  
 
   const navigationLabel = ({ date, view }) => {
     if (view === 'month') {
@@ -48,29 +82,27 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
     return null;
   };
 
-  const btnIncr = () =>{
-     if (quantity < product.quantity) {
-       setQuantity( quantity + 1)
-       if (dateRange[0] && dateRange[1]) {
-         onDateChange({range: dateRange, quantity: quantity + 1, daysDifference: daysDifference});
-       }
-     }
-  }
-
-  const btnDecr = () =>{
-
-     if(quantity > 1){
-      setQuantity( quantity - 1)
+  const btnIncr = () => {
+    if (quantity < product.quantity) {
+      setQuantity(quantity + 1);
       if (dateRange[0] && dateRange[1]) {
-        onDateChange({range: dateRange, quantity: quantity - 1, daysDifference: daysDifference});
+        onDateChange({ range: dateRange, quantity: quantity + 1, daysDifference: daysDifference });
       }
-     }
-  }
+    }
+  };
 
+  const btnDecr = () => {
+    if (quantity > 1) {
+      setQuantity(quantity - 1);
+      if (dateRange[0] && dateRange[1]) {
+        onDateChange({ range: dateRange, quantity: quantity - 1, daysDifference: daysDifference });
+      }
+    }
+  };
 
   return (
     <div className="custom-calendar-container">
-      <p className='subtitle-calendar'>Chosissez vos dates de location (4jours minimum) </p>
+      <p className='subtitle-calendar'>Chosissez vos dates de location (4 jours minimum)</p>
       <div className='container-quantity'>
         <p>Quantité :</p>
         <div className="container-quantity-btn">
@@ -84,10 +116,11 @@ const CustomCalendar = ({ onDateChange, price, product }) => {
         value={dateRange}
         selectRange={true}
         minDate={new Date()}
-        navigationLabel={navigationLabel} 
-        prev2Label={null} 
-        next2Label={null} 
+        navigationLabel={navigationLabel}
+        prev2Label={null}
+        next2Label={null}
         className="custom-calendar"
+        tileDisabled={({ date }) => isDateUnavailable(date)} // Désactive les dates dans la plage d'indisponibilité
       />
 
       <div className="calendar-inputs mb-3">

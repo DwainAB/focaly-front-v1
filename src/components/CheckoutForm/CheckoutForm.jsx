@@ -14,7 +14,7 @@ function CheckoutForm({ order }) {
         // Créer le PaymentIntent en appelant l'API Symfony directement
         let clientSecret;
         try {
-            const response = await fetch("http://localhost:8000/api/create-payment-intent", {
+            const response = await fetch("https://focaly-service.in/public/api/create-payment-intent", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

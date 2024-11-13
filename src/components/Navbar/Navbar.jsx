@@ -149,7 +149,7 @@ const Navbar = () => {
               <div key={product.id} className="container-search-results">
                 <Link to={`http://localhost:3000/product/${product.id}`} onClick={closeSearch}>
                   <div className="search-result-item">
-                    <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} /> 
+                    <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt={product.title} /> 
                     <div className="search-result-item-text">
                       <p>{product.title}</p>
                       <p>A partir de {product.price} €</p>

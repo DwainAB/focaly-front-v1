@@ -10,6 +10,14 @@
     font-family: 'Poppins', sans-serif;
 }
 
+/* CSS pour les dates bloquées */
+.blocked-date {
+    background-color: #ffcccc;  /* Par exemple, une couleur rouge claire */
+    color: #fff;  /* Texte blanc */
+    pointer-events: none;  /* Empêche l'interaction avec ces dates */
+  }
+  
+
 .container-quantity{
     width: 100%;
     display: flex;

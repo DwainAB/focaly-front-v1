@@ -96,7 +96,7 @@ const ProductList = ({ category }) => {
                     products.map((product) => (
                         <Link to={`/product/${product.id}`} key={product.id}>
                             <div className="product">
-                                <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.title} className="product-image" />
+                                <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt={product.title} className="product-image" />
                                 <div className="info-product">
                                     <h2 className="title-product-collection">{product.title}</h2>
                                     <p className="price-product-collection">À partir de {product.price}€</p>

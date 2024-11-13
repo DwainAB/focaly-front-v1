@@ -148,7 +148,7 @@ const ProductSelected = () => {
         <div className='global-product-selected'>
             <div className="container-product-selected">
                 <div className="container-product-selected-img">
-                    <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt="product" />
+                    <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt="product" />
                 </div>
 
                 <div className="container-product-selected-info">
@@ -185,7 +185,7 @@ const ProductSelected = () => {
                         </>
                     )}
 
-                    <Calendar onDateChange={handleDateChange} price={price} product={product} />
+                    <Calendar onDateChange={handleDateChange} price={price} product={product} productId={product.id} />
                     <button className={`btn-add-to-cart ${!isAddToCartEnabled ? 'disabled' : ''}`} onClick={handleAddToCart} disabled={!isAddToCartEnabled}>Ajouter au panier</button> 
                     </div>
             </div>

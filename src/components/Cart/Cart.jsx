@@ -208,7 +208,7 @@ const Cart = () => {
               {cartItems.map((item, index) => (
                 <div key={index} className="container-product-cart">
                   <div className="container-info-product">
-                    <img src={`http://localhost:8000/uploads/images/${item.product.images[0]}`} alt="" />
+                    <img src={`https://focaly-service.in/public/uploads/images/${item.product.images[0]}`} alt="" />
                     <div className="container-info-text">
                       <p className='title-info-text'>{item.product.title}</p>
                       <p className='price-info-text'>{parseFloat(item.price).toFixed(2)}€</p>
@@ -259,7 +259,7 @@ const Cart = () => {
                     <div className="info-product" key={accessoryIndex}>
                       {accessory.images && accessory.images[0] && (
                         <img 
-                          src={`http://localhost:8000/uploads/images/${accessory.images[0]}`}
+                          src={`https://focaly-service.in/public/uploads/images/${accessory.images[0]}`}
                           alt={accessory.title}
                           className="accessory-image"
                         />

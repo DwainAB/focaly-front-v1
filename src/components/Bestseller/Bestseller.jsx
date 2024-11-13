@@ -29,7 +29,7 @@ const Bestseller = () => {
                 {products.map((product, index) => (
                     <Link key={index} to={`/product/${product.id}`}>
                         <div className="product-bestseller">
-                            <img src={`http://localhost:8000/uploads/images/${product.images[0]}`} alt={product.name} />
+                            <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt={product.name} />
                             <p>{product.title} dès <br />{product.price}€/jours</p>
                         </div>
                     </Link>

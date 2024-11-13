@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:8000/api'; 
+const BASE_URL = 'https://focaly-service.in/public/api'; 
 
 export const apiService = {
 
