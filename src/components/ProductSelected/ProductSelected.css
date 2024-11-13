@@ -117,11 +117,13 @@
 
 .btn-add-to-cart{
     height: 40px;
-    width: 150px;
+    width: 180px;
     border: 0;
     border-radius: 10px;
     margin: 0 auto;
     margin-top: 30px;
+    color: #000;
+    min-width: 150px!important;
 
     &:hover{
         cursor: pointer;
@@ -130,6 +132,7 @@
 
 .btn-add-to-cart.disabled {
     cursor: default; 
+    color: #c0c0c0;
 }
 
 @media screen and (max-width:1400px) {
