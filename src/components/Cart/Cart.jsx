@@ -220,7 +220,7 @@ const Cart = () => {
                   </div>
                   <div className="container-days-cart">
                     <p>Jours :</p>
-                    <p>{item.daysDifference}</p>
+                    <p className='number-days'>{item.daysDifference}</p>
                     <p onClick={() => handleRemoveItem(index)}>Supprimer</p> 
                   </div>
                   <div className="container-price-cart">

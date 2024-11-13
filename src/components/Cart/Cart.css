@@ -12,6 +12,8 @@
   margin-bottom: 100px!important;
 }
 
+
+
 .container-days-cart p:nth-child(1){
   display: none;
 }
@@ -309,7 +311,7 @@
   }
 
   .container-days-cart{
-    width: 236px;
+    width: 234px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -321,7 +323,11 @@
     display: block;
   }
 
-  .container-days-cart p{
+  .container-days-cart p, .number-days{
+    font-size: 12px;
+  }
+
+  .container-days-cart p:nth-child(2){
     font-size: 12px;
   }
 

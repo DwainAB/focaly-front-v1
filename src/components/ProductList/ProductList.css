@@ -58,12 +58,12 @@
 }
 
 .title-product-collection{
-    display: -webkit-box; /* Utilisé pour le support de l'ellipsis */
-    display: box; /* Pour les navigateurs qui supportent la propriété standard */
-    -webkit-box-orient: vertical; /* Orientation verticale */
-    box-orient: vertical; /* Pour les navigateurs qui supportent la propriété standard */
-    -webkit-line-clamp: 2; /* Limite à 2 lignes */
-    line-clamp: 2; /* Pour les navigateurs qui supportent la propriété standard */
+    display: -webkit-box; 
+    display: box; 
+    -webkit-box-orient: vertical; 
+    box-orient: vertical; 
+    -webkit-line-clamp: 2; 
+    line-clamp: 2; 
     overflow: hidden; 
     text-overflow: ellipsis; 
 }
@@ -191,7 +191,6 @@
 @media screen and (max-width: 1000px) {
     .product-list {
         flex-wrap: wrap !important;
-        margin: 0 !important;
     }
 
     .product-list img {
@@ -213,14 +212,17 @@
 @media screen and (max-width: 790px) {
     .product-list img {
         max-width: 450px !important;
-        max-height: 360px !important;
+        max-height: 350px !important;
         width: 100% !important;
     }
 
+    .product-list{
+        margin-top: 50px ;
+    }
+
     .product {
-        max-width: 460px !important;
-        width: 100% !important;
-        margin: 0 20px !important;
+        max-width: 450px !important;
+        min-width: 330px;
     }
 
     .top-form-professional {
