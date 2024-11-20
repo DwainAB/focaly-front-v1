@@ -247,20 +247,24 @@ function DashboardClient() {
                                 <p className="text-order-empty">Pas encore de commande</p>
                             ) : (
                                 <div className="container-list-order">
-                                    {orders.map(order => (
-                                        <Link key={order.id} className="order-item">
+                                    {orders && orders.length > 0 ? (
+                                        orders.map(order => (
+                                            <Link key={order.id} className="order-item">
 
-                                            <div className="container-left-order-item">
-                                                <p>{order.refOrder}</p>
-                                                <p>{order.totalPrice} €</p>
-                                            </div>
-                                            <div className="container-right-order-item">
-                                                <p>{new Date(order.startDate).toLocaleDateString('fr-FR')}</p>
-                                                <p>{new Date(order.endDate).toLocaleDateString('fr-FR')}</p>
-                                            </div>
+                                                <div className="container-left-order-item">
+                                                    <p>{order.refOrder}</p>
+                                                    <p>{order.totalPrice} €</p>
+                                                </div>
+                                                <div className="container-right-order-item">
+                                                    <p>{new Date(order.startDate).toLocaleDateString('fr-FR')}</p>
+                                                    <p>{new Date(order.endDate).toLocaleDateString('fr-FR')}</p>
+                                                </div>
 
-                                        </Link>
-                                    ))}
+                                            </Link>
+                                        ))
+                                    ) : (
+                                        <p className="text-order-empty">Pas encore de commande</p>
+                                    )}
                                 </div>
                             )}
                         </div>

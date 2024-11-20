@@ -6,6 +6,7 @@ function Signup({ onBack }) {
     const [errors, setErrors] = useState({}); // État pour les erreurs
     const [password, setPassword] = useState(""); // État pour le mot de passe
     const [confirmPassword, setConfirmPassword] = useState(""); // État pour la confirmation du mot de passe
+    const [errorApi, setErrorApi] = useState('')
 
     const validateForm = (event) => {
         const newErrors = {};
@@ -40,19 +41,27 @@ function Signup({ onBack }) {
             newErrors.password = "Le mot de passe doit contenir au moins une majuscule, une minuscule, un chiffre et un caractère spécial (ex: @$!%*?&).";
         }
         setErrors(newErrors);
-        return Object.keys(newErrors).length === 0; // Retourne vrai si aucune erreur
+        return Object.keys(newErrors).length === 0; 
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        if (!validateForm(event)) return; // Ne soumet pas si le formulaire n'est pas valide
+        if (!validateForm(event)) return; 
         const formData = new FormData(event.target);
         apiService.addUser(formData)
             .then(response => {
-                console.log(response);
+                if(response.error){
+                    setErrorApi(response.error);
+                }
             })
             .catch(error => {
-                console.error(error);
+                console.error(error.response); 
+                if (error.response && error.response.data && error.response.data.error) {
+                    setErrorApi(error.response.data.error);
+                } else {
+                    setErrorApi("Une erreur est survenue.");
+                }
+            
             });
     };
 
@@ -131,7 +140,7 @@ function Signup({ onBack }) {
                     <input name="phone" placeholder="+33" type="text" required />
                 </div>
                 {errors.phone && <div className="error-message" style={{ color: 'red' }}>{errors.phone}</div>} 
-
+                {errorApi && <p style={{ color: 'red' }}>{errorApi}</p>}
                 <button type="submit">S'inscrire</button>
 
             </form>

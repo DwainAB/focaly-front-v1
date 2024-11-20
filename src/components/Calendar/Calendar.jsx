@@ -17,27 +17,94 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     return newDate;
   };
 
+  const subtractOneDay = (date) => {
+    const newDate = new Date(date);
+    newDate.setDate(newDate.getDate() - 1);  // Soustrait 1 jour
+    return newDate;
+  };
+
   // Fetch unavailable dates and extend them by 4 days
   useEffect(() => {
+    const quantityProduct = product.quantity
     const getDateUnavailable = async () => {
       try {
-        const response = await fetch(`https://focaly-service.in/public/api/orders/dates/${productId}`);
+        const response = await fetch(`https://focaly-service.in/public/api/product/${productId}/reservations`);
         if (!response.ok) {
           throw new Error(`Erreur lors de la récupération des dates : ${response.status}`);
         }
-        const dateUnavailable = await response.json();
+        const data = await response.json();
+        const dateUnavailable = data.reservations;
+          
+        //console.log("date :",dateUnavailable);
+        
+       // Utilisation d'un objet pour compter les occurrences
+       const dateCountMap = {};
 
+       dateUnavailable.forEach(range => {
+        
+        const key = `${range.startDate}|${range.endDate}`;
+         
+         if (dateCountMap[key]) {
+           dateCountMap[key]++;
+         } else {
+           dateCountMap[key] = 1;
+         }
+       });
+ 
+       const duplicateDates = Object.entries(dateCountMap)
+         .filter(([, count]) => count > 1)
+         .map(([key, count]) => {
+          const [rawStartDate, rawEndDate] = key.split('|');
+
+           const startDate = rawStartDate.split(' ')[0]; 
+           const endDate = rawEndDate.split(' ')[0];     
+            
+           return {
+             startDate,
+             endDate,
+             count
+           };
+         });
+ 
+       //console.log("Dates identiques avec leur nombre d'occurrences :", duplicateDates);
+       const unavailableDates = [];  // Tableau pour stocker les dates
+
+      const checkOccurrences = (duplicateDates, quantityProduct) => {
+        for (const date of duplicateDates) {
+          if (date.count === quantityProduct) {
+            console.log(`Produit non disponible à cette date : ${date.startDate} - ${date.endDate} car ${date.count} produits sur ${quantityProduct} sont déjà réservé .`);
+            unavailableDates.push({
+              startDate: subtractOneDay(date.startDate),  
+              endDate: date.endDate
+            });
+            return true;
+          }
+        }
+        
+        if (unavailableDates.length === 0) {
+          console.log("Un ou plusieurs produits sont encore disponibles.");
+        }
+
+        return unavailableDates;
+
+      };
+      
+      const quantityProduct = product.quantity; 
+      const result = checkOccurrences(duplicateDates, quantityProduct);
+      //console.log("Résultat de la vérification :", result);
+      console.log(unavailableDates);
+      
         // Augmenter de 4 jours la date de fin pour chaque plage bloquée
-        const extendedUnavailableDates = dateUnavailable.map(range => {
-          const extendedEndDate = addFourDays(range.endDate);  // Ajoute 4 jours à la date de fin
+        const extendedUnavailableDates = unavailableDates.map(range => {
+          const extendedEndDate = addFourDays(range.endDate);  
           return {
             ...range,
-            endDate: extendedEndDate.toISOString().split('T')[0]  // Formatage pour garder uniquement la date
+            endDate: extendedEndDate.toISOString().split('T')[0]  
           };
         });
 
         setUnavailableDates(extendedUnavailableDates);
-        console.log("Dates bloquées étendues :", extendedUnavailableDates);
+        //console.log("Dates bloquées étendues :", extendedUnavailableDates);
         
       } catch (error) {
         console.error(error);

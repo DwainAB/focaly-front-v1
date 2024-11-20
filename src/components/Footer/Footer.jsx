@@ -47,11 +47,11 @@ const Footer = () => {
                     <div className="col-md-2 li-footer ">
                         <h2 className="title-h2-footer">Nos collections</h2>
                         <ul className="list-unstyled">
-                            <li><a href="/AppareilsPhotos" className="footer-link">Nos Appareils Photos</a></li>
-                            <li><a href="/drones" className="footer-link">Nos Drones</a></li>
-                            <li><a href="/accessories" className="footer-link">Nos différents accessoires</a></li>
-                            <li><a href="/packs" className="footer-link">Nos différents packs</a></li>
-                            <li><a href="/cameras-embarquees" className="footer-link">Les caméras Embarquées</a></li>
+                            <li><a href="/collection/cameras-embarquée" className="footer-link">Les caméras Embarquées</a></li>
+                            <li><a href="/collection/appareils-photos" className="footer-link">Nos Appareils Photos</a></li>
+                            <li><a href="/collection/drones" className="footer-link">Nos Drones</a></li>
+                            <li><a href="/collection/accessoires" className="footer-link">Nos différents accessoires</a></li>
+                            <li><a href="/collection/pack" className="footer-link">Nos différents packs</a></li>
                         </ul>
                     </div>
 
