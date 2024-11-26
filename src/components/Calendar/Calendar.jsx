@@ -7,25 +7,27 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [daysDifference, setDaysDifference] = useState(0); 
+  const [daysDifference, setDaysDifference] = useState(0);
   const [unavailableDates, setUnavailableDates] = useState([]);
+  const [fullyBookedDates, setFullyBookedDates] = useState([]);
 
-  // Fonction pour ajouter 4 jours à la date de fin
-  const addFourDays = (date) => {
+  // Ajoute 7 jours à la date de fin
+  const addSevenDays = (date) => {
     const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + 4);  // Ajoute 4 jours
+    newDate.setDate(newDate.getDate() + 7);
     return newDate;
   };
 
+  // Soustrait 1 jour à la date de début
   const subtractOneDay = (date) => {
     const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() - 1);  // Soustrait 1 jour
+    newDate.setDate(newDate.getDate() - 1);
     return newDate;
   };
 
-  // Fetch unavailable dates and extend them by 4 days
   useEffect(() => {
-    const quantityProduct = product.quantity
+    const quantityProduct = product.quantity;
+    
     const getDateUnavailable = async () => {
       try {
         const response = await fetch(`https://focaly-service.in/public/api/product/${productId}/reservations`);
@@ -33,96 +35,57 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
           throw new Error(`Erreur lors de la récupération des dates : ${response.status}`);
         }
         const data = await response.json();
-        const dateUnavailable = data.reservations;
+        const allUnavailableDates = [];
+
+        data.reservations.forEach(reservation => {
+          const startDate = new Date(reservation.startDate);
+          const endDate = new Date(reservation.endDate);
           
-        //console.log("date :",dateUnavailable);
-        
-       // Utilisation d'un objet pour compter les occurrences
-       const dateCountMap = {};
+          startDate.setDate(startDate.getDate());  // Inclure un jour après la date de début
+          endDate.setDate(endDate.getDate() + 7);  // Inclure un jour après la date de fin
 
-       dateUnavailable.forEach(range => {
-        
-        const key = `${range.startDate}|${range.endDate}`;
-         
-         if (dateCountMap[key]) {
-           dateCountMap[key]++;
-         } else {
-           dateCountMap[key] = 1;
-         }
-       });
- 
-       const duplicateDates = Object.entries(dateCountMap)
-         .filter(([, count]) => count > 1)
-         .map(([key, count]) => {
-          const [rawStartDate, rawEndDate] = key.split('|');
-
-           const startDate = rawStartDate.split(' ')[0]; 
-           const endDate = rawEndDate.split(' ')[0];     
-            
-           return {
-             startDate,
-             endDate,
-             count
-           };
-         });
- 
-       //console.log("Dates identiques avec leur nombre d'occurrences :", duplicateDates);
-       const unavailableDates = [];  // Tableau pour stocker les dates
-
-      const checkOccurrences = (duplicateDates, quantityProduct) => {
-        for (const date of duplicateDates) {
-          if (date.count === quantityProduct) {
-            console.log(`Produit non disponible à cette date : ${date.startDate} - ${date.endDate} car ${date.count} produits sur ${quantityProduct} sont déjà réservé .`);
-            unavailableDates.push({
-              startDate: subtractOneDay(date.startDate),  
-              endDate: date.endDate
-            });
-            return true;
+          for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+            allUnavailableDates.push(date.toISOString().split('T')[0]);
           }
-        }
-        
-        if (unavailableDates.length === 0) {
-          console.log("Un ou plusieurs produits sont encore disponibles.");
-        }
-
-        return unavailableDates;
-
-      };
-      
-      const quantityProduct = product.quantity; 
-      const result = checkOccurrences(duplicateDates, quantityProduct);
-      //console.log("Résultat de la vérification :", result);
-      console.log(unavailableDates);
-      
-        // Augmenter de 4 jours la date de fin pour chaque plage bloquée
-        const extendedUnavailableDates = unavailableDates.map(range => {
-          const extendedEndDate = addFourDays(range.endDate);  
-          return {
-            ...range,
-            endDate: extendedEndDate.toISOString().split('T')[0]  
-          };
         });
 
-        setUnavailableDates(extendedUnavailableDates);
-        //console.log("Dates bloquées étendues :", extendedUnavailableDates);
+        //console.log("Toutes les dates indisponibles :", allUnavailableDates);
         
+        // Fonction pour obtenir les dates totalement réservées
+        const getFullyBookedDates = (allUnavailableDates, quantityProduct) => {
+          const dateOccurrences = {};
+
+          // Compter les occurrences de chaque date
+          allUnavailableDates.forEach(date => {
+            if (dateOccurrences[date]) {
+              dateOccurrences[date]++;
+            } else {
+              dateOccurrences[date] = 1;
+            }
+          });
+
+          // Filtrer les dates qui atteignent le nombre maximal de réservations
+          const fullyBookedDates = Object.keys(dateOccurrences).filter(date => dateOccurrences[date] >= quantityProduct);
+          //console.log("Dates totalement réservées :", fullyBookedDates);
+          return fullyBookedDates;
+        };
+
+        // Obtenir les dates totalement réservées et mettre à jour l'état
+        const fullyBooked = getFullyBookedDates(allUnavailableDates, quantityProduct);
+        setFullyBookedDates(fullyBooked);
+
       } catch (error) {
         console.error(error);
       }
     };
 
     getDateUnavailable();
-  }, [dateRange]); 
+  }, [productId, product.quantity]);
 
-  // Fonction pour vérifier si une plage de dates sélectionnée chevauche les dates bloquées
-  const isDateUnavailable = (startDate, endDate) => {
-    return unavailableDates.some(range => {
-      const startBlocked = new Date(range.startDate);
-      const endBlocked = new Date(range.endDate);
-
-      // Vérifie si la plage sélectionnée chevauche la plage bloquée
-      return (startDate < endBlocked && endDate > startBlocked);
-    });
+  // Vérifie si une plage de dates sélectionnée chevauche les dates bloquées
+  const isDateUnavailable = (date) => {
+    const dateString = date.toISOString().split('T')[0];
+    return fullyBookedDates.includes(dateString);
   };
 
   const handleDateChange = (range) => {
@@ -137,19 +100,12 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     setDaysDifference(differenceInDays);
 
     if (differenceInDays >= 4) {
-      // Vérifier si la plage sélectionnée chevauche des dates bloquées
-      if (isDateUnavailable(startDate, endDate)) {
+      if (isDateUnavailable(startDate) || isDateUnavailable(endDate)) {
         setErrorMessage('Les dates sélectionnées chevauchent des dates indisponibles. Veuillez choisir une autre plage.');
       } else {
         setDateRange(range);
         setDaysDifference(differenceInDays);
         setErrorMessage('');
-
-        const selectedDates = {
-          debut: startDate.toISOString().split('T')[0],
-          fin: endDate.toISOString().split('T')[0]
-        };
-
         if (onDateChange) {
           onDateChange({ range, quantity, daysDifference: differenceInDays });
         }
@@ -186,7 +142,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
   return (
     <div className="custom-calendar-container">
-      <p className='subtitle-calendar'>Chosissez vos dates de location (4 jours minimum)</p>
+      <p className='subtitle-calendar'>Choisissez vos dates de location (4 jours minimum)</p>
       <div className='container-quantity'>
         <p>Quantité :</p>
         <div className="container-quantity-btn">
@@ -204,7 +160,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         prev2Label={null}
         next2Label={null}
         className="custom-calendar"
-        tileDisabled={({ date }) => isDateUnavailable(date, date)} // Désactive les dates dans la plage d'indisponibilité
+        tileDisabled={({ date }) => isDateUnavailable(date)} // Désactive les dates totalement réservées
       />
 
       <div className="calendar-inputs mb-3">

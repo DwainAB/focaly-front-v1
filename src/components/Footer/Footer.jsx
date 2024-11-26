@@ -1,15 +1,19 @@
 import React, { useState } from 'react';
-import { Tiktok, Instagram, Envelope } from 'react-bootstrap-icons';
+import { Tiktok, Instagram } from 'react-bootstrap-icons';
 import { FaCcVisa, FaCcMastercard, FaCcPaypal, FaApplePay, FaCcAmex } from 'react-icons/fa';
+import { apiService } from '../API/Api';
 import './Footer.css';
 
 const Footer = () => {
     const [email, setEmail] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleEmailChange = (e) => {
         setEmail(e.target.value);
         setErrorMessage('');
+        console.log(email);
+        
     };
 
     const handleSubmit = (e) => {
@@ -18,11 +22,26 @@ const Footer = () => {
 
         if (!emailPattern.test(email)) {
             setErrorMessage('L\'email est invalide.');
+            setSuccessMessage('');
         } else {
             console.log('Email soumis:', email);
+            apiService.newsletterSubscribe(email)
+                .then(response => {
+                    if (response && response.message) {
+                        console.log('Réponse de l\'API:', response.message);
+                        setSuccessMessage(response.message);
+                        setErrorMessage('');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erreur lors de l\'inscription:', error);
+                    setErrorMessage('Erreur lors de l\'inscription à la newsletter.');
+                    setSuccessMessage('');
+                });
             setEmail('');
         }
     };
+    
 
 
     return (
@@ -41,8 +60,8 @@ const Footer = () => {
                             />
                             <button className="btn text-white" style={{ backgroundColor: "#000000" }}>Go</button>
                         </form>
-                        {errorMessage && <div className="text-danger mt-2">{errorMessage}</div>}
-                    </div>
+                        {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
+                        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}                    </div>
 
                     <div className="col-md-2 li-footer ">
                         <h2 className="title-h2-footer">Nos collections</h2>

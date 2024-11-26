@@ -148,5 +148,28 @@ export const apiService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    newsletterSubscribe: async (email) => {
+        try {
+            const formData = new FormData();
+            formData.append('email', email);
+    
+            const response = await fetch(`${BASE_URL}/newsletter/subscribe`, {
+                method: "POST",
+                body: formData
+            });
+    
+            if (!response.ok) {
+                throw new Error('Erreur HTTP : ' + response.status); // Lancer une erreur si la réponse HTTP n'est pas OK
+            }
+    
+            // Essayer de convertir la réponse en JSON
+            const responseData = await response.json();  // Récupère la réponse JSON
+            return responseData;  // Retourne l'objet JSON contenant le message
+        } catch (error) {
+            throw error;  // Propager l'erreur pour la capturer dans le .catch()
+        }
     }
+    
 };
