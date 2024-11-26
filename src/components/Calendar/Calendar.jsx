@@ -14,7 +14,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
 
   useEffect(() => {
-    const quantityProduct = product.quantity;
+    const quantityProduct = product.stock;
     
     const getDateUnavailable = async () => {
       try {
@@ -68,7 +68,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     };
 
     getDateUnavailable();
-  }, [productId, product.quantity]);
+  }, [productId, product.stock]);
 
   // Vérifie si une plage de dates sélectionnée chevauche les dates bloquées
   const isDateUnavailable = (date) => {
@@ -112,7 +112,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     }
   
     // Calculer la soustraction entre la quantité et le nombre d'occurrences
-    const availableQuantity = product.quantity - maxCount;
+    const availableQuantity = product.stock - maxCount;
   
     //console.log("Date avec la plus grande occurrence :", maxDate);
     //console.log("Nombre d'occurrences :", maxCount);

@@ -22,7 +22,7 @@ const ProductSelected = () => {
         setLoading(true); // Commence le chargement
         apiService.getProductById(id)
             .then(data => {
-                //console.log('Données reçues du produit :', data);
+                console.log('Données reçues du produit :', data);
                 setProduct(data);
                 setLoading(false); // Fin du chargement
             })
