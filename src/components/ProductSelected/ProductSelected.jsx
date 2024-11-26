@@ -22,7 +22,7 @@ const ProductSelected = () => {
         setLoading(true); // Commence le chargement
         apiService.getProductById(id)
             .then(data => {
-                console.log('Données reçues du produit :', data);
+                //console.log('Données reçues du produit :', data);
                 setProduct(data);
                 setLoading(false); // Fin du chargement
             })
@@ -76,17 +76,18 @@ const ProductSelected = () => {
         return <p>Produit non trouvé</p>;
     }
 
-    // Fonction pour gérer les données envoyées par le calendrier
     const handleDateChange = (data) => {
         setCalendarData(data);
-        console.log("Données du calendrier :", data);
+        console.log(data);
         
+      
         const daysDifference = Math.floor(data.daysDifference); 
         const quantityAndDays = daysDifference * data.quantity;
-    
-        setPrice(quantityAndDays * product.price);
+      
+        setPrice(quantityAndDays * product.price); // Mettre à jour le prix en fonction de la quantité
         setIsAddToCartEnabled(data.range[0] && data.range[1]);
-    };
+      };
+      
     
 
     const formatDate = (date) => {

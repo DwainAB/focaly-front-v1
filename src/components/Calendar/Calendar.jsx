@@ -12,19 +12,6 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [unavailableDates, setUnavailableDates] = useState([]);
   const [fullyBookedDates, setFullyBookedDates] = useState([]);
 
-  // Ajoute 7 jours à la date de fin
-  const addSevenDays = (date) => {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() + 7);
-    return newDate;
-  };
-
-  // Soustrait 1 jour à la date de début
-  const subtractOneDay = (date) => {
-    const newDate = new Date(date);
-    newDate.setDate(newDate.getDate() - 1);
-    return newDate;
-  };
 
   useEffect(() => {
     const quantityProduct = product.quantity;
@@ -42,15 +29,15 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
           const startDate = new Date(reservation.startDate);
           const endDate = new Date(reservation.endDate);
           
-          startDate.setDate(startDate.getDate());  // Inclure un jour après la date de début
-          endDate.setDate(endDate.getDate() + 7);  // Inclure un jour après la date de fin
+          startDate.setDate(startDate.getDate());  
+          endDate.setDate(endDate.getDate() + 7);  // On ajoute 7 jours après la date de fin
 
           for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
             allUnavailableDates.push(date.toISOString().split('T')[0]);
           }
         });
 
-        console.log("Toutes les dates indisponibles :", allUnavailableDates);
+        //console.log("Toutes les dates indisponibles :", allUnavailableDates);
         setUnavailableDates(allUnavailableDates)
         // Fonction pour obtenir les dates totalement réservées
         const getFullyBookedDates = (allUnavailableDates, quantityProduct) => {
@@ -67,7 +54,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
           // Filtrer les dates qui atteignent le nombre maximal de réservations
           const fullyBookedDates = Object.keys(dateOccurrences).filter(date => dateOccurrences[date] >= quantityProduct);
-          console.log("Dates totalement réservées :", fullyBookedDates);
+          //console.log("Dates totalement réservées :", fullyBookedDates);
           return fullyBookedDates;
         };
 
@@ -90,11 +77,10 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   };
 
   const logBookedDatesInRange = (startDate, endDate) => {
-    const dateCount = {}; // Objet pour compter les occurrences de chaque date
+    const dateCount = {}; 
     const start = new Date(startDate);
     const end = new Date(endDate);
   
-    // Assure-toi que la date est bien formatée sans heure
     const formatDate = (date) => date.toISOString().split('T')[0];
   
     // Vérifie chaque date dans la plage
@@ -128,11 +114,10 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     // Calculer la soustraction entre la quantité et le nombre d'occurrences
     const availableQuantity = product.quantity - maxCount;
   
-    console.log("Date avec la plus grande occurrence :", maxDate);
-    console.log("Nombre d'occurrences :", maxCount);
-    console.log("Quantité restante disponible :", availableQuantity);
+    //console.log("Date avec la plus grande occurrence :", maxDate);
+    //console.log("Nombre d'occurrences :", maxCount);
+    //console.log("Quantité restante disponible :", availableQuantity);
     setQuantityMax(availableQuantity)
-    setQuantity(1)
   
     if (Object.keys(dateCount).length > 0) {
       console.log("Jours réservés entre ces dates : ", dateCount);
@@ -146,31 +131,38 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const handleDateChange = (range) => {
     const startDate = range[0];
     const endDate = range[1];
-
+  
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
-
+  
     const differenceInTime = endDate - startDate;
     const differenceInDays = differenceInTime / (1000 * 3600 * 24) + 1;
     setDaysDifference(differenceInDays);
-
+  
+    // Modifiez la quantité seulement après avoir validé la plage de dates
     if (differenceInDays >= 4) {
       if (isDateUnavailable(startDate) || isDateUnavailable(endDate)) {
         setErrorMessage('Les dates sélectionnées chevauchent des dates indisponibles. Veuillez choisir une autre plage.');
       } else {
         setDateRange(range);
-        setDaysDifference(differenceInDays);
         setErrorMessage('');
+        setQuantity(1);  // Assurez-vous que la quantité est réinitialisée à 1 ici
+  
         if (onDateChange) {
-          onDateChange({ range, quantity, daysDifference: differenceInDays });
+          onDateChange({
+            range,
+            quantity: 1,  // Envoyer la quantité de manière explicite
+            daysDifference: differenceInDays,
+          });
         }
-        // Log les dates réservées entre la plage sélectionnée
         logBookedDatesInRange(startDate, endDate);
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
     }
   };
+  
+
 
   const navigationLabel = ({ date, view }) => {
     if (view === 'month') {
