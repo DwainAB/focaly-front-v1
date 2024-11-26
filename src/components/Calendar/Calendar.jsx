@@ -7,6 +7,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
+  const [quantityMax, setQuantityMax] = useState();
   const [daysDifference, setDaysDifference] = useState(0);
   const [unavailableDates, setUnavailableDates] = useState([]);
   const [fullyBookedDates, setFullyBookedDates] = useState([]);
@@ -49,8 +50,8 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
           }
         });
 
-        //console.log("Toutes les dates indisponibles :", allUnavailableDates);
-        
+        console.log("Toutes les dates indisponibles :", allUnavailableDates);
+        setUnavailableDates(allUnavailableDates)
         // Fonction pour obtenir les dates totalement réservées
         const getFullyBookedDates = (allUnavailableDates, quantityProduct) => {
           const dateOccurrences = {};
@@ -66,7 +67,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
           // Filtrer les dates qui atteignent le nombre maximal de réservations
           const fullyBookedDates = Object.keys(dateOccurrences).filter(date => dateOccurrences[date] >= quantityProduct);
-          //console.log("Dates totalement réservées :", fullyBookedDates);
+          console.log("Dates totalement réservées :", fullyBookedDates);
           return fullyBookedDates;
         };
 
@@ -87,6 +88,60 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     const dateString = date.toISOString().split('T')[0];
     return fullyBookedDates.includes(dateString);
   };
+
+  const logBookedDatesInRange = (startDate, endDate) => {
+    const dateCount = {}; // Objet pour compter les occurrences de chaque date
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+  
+    // Assure-toi que la date est bien formatée sans heure
+    const formatDate = (date) => date.toISOString().split('T')[0];
+  
+    // Vérifie chaque date dans la plage
+    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+      const dateString = formatDate(date);  // Formate la date dans le bon format
+  
+      // Vérifie si cette date est réservée dans 'unavailableDates'
+      for (let i = 0; i < unavailableDates.length; i++) {
+        if (unavailableDates[i] === dateString) {
+          // Compte les occurrences de la date
+          if (dateCount[dateString]) {
+            dateCount[dateString]++;
+          } else {
+            dateCount[dateString] = 1;
+          }
+        }
+      }
+    }
+  
+    // Trouver la date avec le plus grand nombre d'occurrences
+    let maxDate = '';
+    let maxCount = 0;
+  
+    for (const date in dateCount) {
+      if (dateCount[date] > maxCount) {
+        maxDate = date;
+        maxCount = dateCount[date];
+      }
+    }
+  
+    // Calculer la soustraction entre la quantité et le nombre d'occurrences
+    const availableQuantity = product.quantity - maxCount;
+  
+    console.log("Date avec la plus grande occurrence :", maxDate);
+    console.log("Nombre d'occurrences :", maxCount);
+    console.log("Quantité restante disponible :", availableQuantity);
+    setQuantityMax(availableQuantity)
+    setQuantity(1)
+  
+    if (Object.keys(dateCount).length > 0) {
+      console.log("Jours réservés entre ces dates : ", dateCount);
+    } else {
+      console.log("Aucune réservation dans cette plage.");
+    }
+  };
+  
+  
 
   const handleDateChange = (range) => {
     const startDate = range[0];
@@ -109,6 +164,8 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         if (onDateChange) {
           onDateChange({ range, quantity, daysDifference: differenceInDays });
         }
+        // Log les dates réservées entre la plage sélectionnée
+        logBookedDatesInRange(startDate, endDate);
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
@@ -123,7 +180,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   };
 
   const btnIncr = () => {
-    if (quantity < product.quantity) {
+    if (quantity < quantityMax) {
       setQuantity(quantity + 1);
       if (dateRange[0] && dateRange[1]) {
         onDateChange({ range: dateRange, quantity: quantity + 1, daysDifference: daysDifference });
@@ -143,14 +200,16 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   return (
     <div className="custom-calendar-container">
       <p className='subtitle-calendar'>Choisissez vos dates de location (4 jours minimum)</p>
-      <div className='container-quantity'>
-        <p>Quantité :</p>
-        <div className="container-quantity-btn">
-          <button onClick={btnDecr}>-</button>
-          <p>{quantity}</p>
-          <button onClick={btnIncr}>+</button>
+      {quantityMax && (
+        <div className='container-quantity'>
+          <p>Quantité :</p>
+          <div className="container-quantity-btn">
+            <button onClick={btnDecr}>-</button>
+            <p>{quantity}</p>
+            <button onClick={btnIncr}>+</button>
+          </div>
         </div>
-      </div>
+      )}
       <Calendar
         onChange={handleDateChange}
         value={dateRange}
