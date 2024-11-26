@@ -53,10 +53,15 @@ const Cart = () => {
   const handleRemoveItem = (index) => {
     const removedItem = cartItems[index];
     
+    // Supprimer l'article du panier
     const updatedItems = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
-  
+    
+    // Recalculer le prix total après suppression
+    let newTotalPrice = updatedItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+    setTotalPrice(newTotalPrice);
+    
     // Si c'est un accessoire, réinitialiser la quantité
     if (removedItem.product.category === 'accessories') {
       setAddedAccessoryQuantities(prev => ({
@@ -65,6 +70,7 @@ const Cart = () => {
       }));
     }
   };
+  
   
 
   // Fonction pour formater les dates au format JJ/MM/AAAA
