@@ -11,6 +11,11 @@ function Payment() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [comment, setComment] = useState('');
+    const [servicePoints, setServicePoints] = useState()
+    const [postalCode, setPostalCode] = useState()
+    const [deliveryMode, setDeliveryMode] = useState(); 
+    const [selectedPoint, setSelectedPoint] = useState(null);
+
     
     const [orderSummary, setOrderSummary] = useState({
         totalPrice: '',
@@ -58,6 +63,54 @@ function Payment() {
         setCartItems(items);
     }, []);
 
+
+    useEffect(()=>{
+        fetchServicePoints();
+        
+    },[])
+
+    useEffect(() => {
+        if (deliveryMode === 'pickup') {
+            setUserConnected((prevUser) => ({
+                ...prevUser,
+                address: '6 Allée Jean Prouvé',
+                city: 'Clichy',
+                zip_code: '92110',
+            }));
+            console.log('Mode de livraison: Pickup - Adresse mise à jour.');
+        }
+    }, [deliveryMode]);
+
+    const fetchServicePoints = async (numericValue) => {
+        const publicKey = 'b10c7273-c294-49f2-8e7b-af3543f8c28b';  // Remplacez par votre clé publique
+        const privateKey = '93d4d18520264c57abf92c6dce14ef08'; // Remplacez par votre clé privée
+    
+        try {
+            const response = await fetch(`https://servicepoints.sendcloud.sc/api/v2/service-points?postal_code=${numericValue}&country=FR`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Basic ' + btoa(`${publicKey}:${privateKey}`),
+                    'Content-Type': 'application/json',
+                }
+            });
+    
+            if (!response.ok) {
+                console.error('Erreur lors de la récupération des points relais:', response.status, response.statusText);
+                return;
+            }
+    
+            const data = await response.json();
+            console.log('Requête réussie :', data);
+            
+            // Par exemple : Traitement des données ou mise à jour de l'état
+            setServicePoints(data || []);
+        } catch (error) {
+            console.error('Erreur lors de la récupération des points relais:', error);
+        }
+    };
+    
+    
+
     const handleSubmitLogin = async (event) => {
         event.preventDefault();
         try {
@@ -81,6 +134,22 @@ function Payment() {
         }));
     };
 
+    const handlePostalCodeChange = (e) => {
+        const value = e.target.value;
+    
+        // Vérifier que l'entrée contient uniquement des chiffres et ne dépasse pas 5 caractères
+        if (/^\d{0,5}$/.test(value)) {
+            setPostalCode(value);
+    
+            // Appeler fetchServicePoints uniquement si le code postal est de 5 chiffres
+            if (value.length === 5) {
+                fetchServicePoints(Number(value));
+            }
+        }
+    };
+    
+    
+    
 
     const handlePayment = async (event) => {
         event.preventDefault();
@@ -130,6 +199,18 @@ function Payment() {
         } catch (error) {
             console.error("Erreur lors du traitement du paiement :", error);
         }
+    };
+
+    const handlePointSelect = (point) => {
+        setSelectedPoint(point.code); 
+        setUserConnected((prevUser) => ({
+            ...prevUser,
+            address: `${point.house_number} ${point.street}`,
+            zip_code: point.postal_code,
+            city: point.city
+        }));
+        console.log('Point relais sélectionné:', point, userConnected);
+
     };
     
     
@@ -191,30 +272,6 @@ function Payment() {
                         />
                         <input 
                             type="text" 
-                            name="address" 
-                            value={userConnected.address || ""} 
-                            required 
-                            placeholder="Adresse" 
-                            onChange={handleChange} 
-                        />
-                        <input 
-                            type="text" 
-                            name="city" 
-                            value={userConnected.city || ""} 
-                            required 
-                            placeholder="Ville" 
-                            onChange={handleChange} 
-                        />
-                        <input 
-                            type="text" 
-                            name="zip_code" 
-                            value={userConnected.zip_code || ""} 
-                            required 
-                            placeholder="Code postal" 
-                            onChange={handleChange} 
-                        />
-                        <input 
-                            type="text" 
                             name="email" 
                             value={userConnected.email || ""} 
                             required 
@@ -229,6 +286,70 @@ function Payment() {
                             placeholder="Numéro" 
                             onChange={handleChange} 
                         />
+
+                        <select name="deliveryMode" id="" onChange={(e) => setDeliveryMode(e.target.value)}>
+                            <option value="">Méthode de livraison</option>
+                            <option value="home">A domicile</option>
+                            <option value="relay">Point relais</option>
+                            <option value="pickup">Click & collect</option>
+                        </select>
+                        
+                        {deliveryMode === "home" && (
+                            <>
+                                <input 
+                                    type="text" 
+                                    name="zip_code" 
+                                    value={userConnected.zip_code || ""} 
+                                    required 
+                                    placeholder="Code postal" 
+                                    onChange={handleChange} 
+                                />
+                                <input 
+                                    type="text" 
+                                    name="city" 
+                                    value={userConnected.city || ""} 
+                                    required 
+                                    placeholder="Ville" 
+                                    onChange={handleChange} 
+                                />
+                                <input 
+                                    type="text" 
+                                    name="address" 
+                                    value={userConnected.address || ""} 
+                                    required 
+                                    placeholder="Adresse" 
+                                    onChange={handleChange} 
+                                />
+                            </>
+                        )}
+
+                        {deliveryMode === "relay" && (
+                            <>
+                                <input value={postalCode} type="text" placeholder="Code postal" onChange={handlePostalCodeChange} />
+                                <div className="container-list-point">
+
+                                    {Array.isArray(servicePoints) && servicePoints.length > 0 && (
+                                        servicePoints.map((point) => (
+                                            <div
+                                            key={point.code}
+                                            className={`container-point ${selectedPoint === point.code ? "selected-point" : ""}`}
+                                            onClick={() => handlePointSelect(point)}
+                                        >
+                                            <p className="name-point">{point.name}</p>
+                                            <p className="address-point">{point.house_number} {point.street} <br /> {point.postal_code} {point.city}</p>
+                                        </div>
+                                        ))
+                                    )}
+                                </div>
+
+                            </>
+                        )}
+
+                        {deliveryMode === 'pickup' && (
+                            <p>Votre colis sera disponible à l'adresse suivante : <br />
+                                6 Allée jean prouvé, Clichy 
+                            </p>
+                        )}
                         <button type="submit">Payer</button>
                     </form>
                 </div>

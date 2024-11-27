@@ -43,7 +43,7 @@
     transform: translateY(-50%);
 }
 
-.container-registerAndSignup-input input{
+.container-registerAndSignup-input input, .container-registerAndSignup-input select{
     width: 400px!important;
     height: 50px;
     border: 0;

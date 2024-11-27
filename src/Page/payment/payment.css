@@ -27,7 +27,7 @@
     gap: 10px;
 }
 
-.container-form-payment form input{
+.container-form-payment form input, .container-form-payment form select{
     background-color: #F0F0F0;
     border: 0;
     border-bottom: 2px solid grey;
@@ -104,6 +104,53 @@
     border-radius: 10px;
     margin-top: 20px;
 }
+
+.container-point{
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 10px;
+    position: relative;
+    max-width: 250px;
+    min-width: 250px;
+    width: 100%;
+    border: 2px solid black;
+    margin: 0;
+}
+
+.name-point{
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.address-point{
+    font-size: 12px;
+    margin: 0;
+}
+
+.container-point {
+    padding: 10px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: border 0.3s ease;
+}
+
+.container-point:hover {
+    border: 1px solid gray;
+}
+
+.container-point.selected-point {
+    border: 2px solid black;
+}
+
+.container-list-point{
+    height: 300px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
 
 @media screen and (max-width: 800px) {
     .container-payment{
