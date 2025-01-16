@@ -73,7 +73,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   // Vérifie si une plage de dates sélectionnée chevauche les dates bloquées
   const isDateUnavailable = (date) => {
     const dateString = date.toISOString().split('T')[0];
-    return fullyBookedDates.includes(dateString);
+    return fullyBookedDates.includes(dateString) || isDateTodayOrTomorrow(new Date(date));
   };
 
   const logBookedDatesInRange = (startDate, endDate) => {
@@ -124,6 +124,18 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     } else {
       console.log("Aucune réservation dans cette plage.");
     }
+  };
+
+  const isDateTodayOrTomorrow = (date) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+  
+    today.setHours(0, 0, 0, 0);
+    tomorrow.setHours(0, 0, 0, 0);
+    date.setHours(0, 0, 0, 0);
+  
+    return date.getTime() === today.getTime() || date.getTime() === tomorrow.getTime();
   };
   
   

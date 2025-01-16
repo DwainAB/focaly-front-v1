@@ -86,6 +86,7 @@ export const apiService = {
         }
     },
 
+    //Modifier un utilisateur
     updateUser: async(id, data) => {
         try {
             const response = await fetch(`${BASE_URL}/update/user/${id}`, {
@@ -141,6 +142,7 @@ export const apiService = {
         }
     },
 
+    //Récupère les commandes d'un client
     getOrderByClient: async (id)=>{
         try {
             const response = await fetch(`${BASE_URL}/order/client/${id}`);
@@ -150,6 +152,7 @@ export const apiService = {
         }
     },
 
+    //Inscription à la newsletter
     newsletterSubscribe: async (email) => {
         try {
             const formData = new FormData();
@@ -164,12 +167,66 @@ export const apiService = {
                 throw new Error('Erreur HTTP : ' + response.status); // Lancer une erreur si la réponse HTTP n'est pas OK
             }
     
-            // Essayer de convertir la réponse en JSON
-            const responseData = await response.json();  // Récupère la réponse JSON
-            return responseData;  // Retourne l'objet JSON contenant le message
+            const responseData = await response.json();  
+            return responseData;  
         } catch (error) {
-            throw error;  // Propager l'erreur pour la capturer dans le .catch()
+            throw error;  
         }
-    }
+    },
+
+    //Récupère la commande égal à la référence donnée
+    getOrderByReference: async (ref) => {
+        try {
+            const response = await fetch(`${BASE_URL}/orders-ref/${encodeURIComponent(ref)}`);
+            
+            if (!response.ok) {
+                // Si la réponse n'est pas ok (statut 404, 500, etc.), renvoyer un message d'erreur
+                const errorData = await response.json();
+                throw new Error(errorData.message || `Erreur HTTP : ${response.status}`);
+            }
     
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    },
+
+    // Dans api.js
+    createStripeIdentitySession: async (orderRef) => {
+        const response = await fetch(`${BASE_URL}/create-verification-session`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderRef }),
+        });
+        return response.json();
+    },
+
+    // Modifier une commande
+    updateOrder: async (id, data) => {
+        try {
+            const response = await fetch(`${BASE_URL}/update/order/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                throw new Error(`Erreur HTTP : ${response.status}`);
+            }
+
+            return await response.json();
+        } catch (error) {
+            console.error("Erreur lors de la mise à jour de la commande :", error);
+            throw error;
+        }
+    },
+    
+
+
+
+
 };

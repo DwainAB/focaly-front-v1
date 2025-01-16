@@ -1,49 +1,166 @@
-.title-success{
-    text-align: center;
-    font-weight: 900;
-    font-family: var(--font-primary);
-    font-size: 42px;
-    margin-top: 200px;
-    margin-bottom: 30px;
+.container-success {
+    padding: 3rem 1rem;
+    background-color: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.subtitle-success{
-    text-align: center;
-    font-weight: 700;
-    font-family: var(--font-primary);
-    font-size: 24px;
-}
-
-.button-success{
-    background-color: #000;
-    border: 0;
-    padding: 10px 15px;
-    border-radius: 10px;
-    display: block;
+.card-success {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    width: 100%;
+    max-width: 42rem;
     margin: 0 auto;
-    color: #fff;
-    margin-bottom: 100px;
-    margin-top: 50px;
+}
 
-    &:hover{
-        cursor: pointer;
+.title-success {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: #111827;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.subtitle-success {
+    font-size: 0.875rem;
+    color: #6b7280;
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.verify-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    color: #3b82f6;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+
+.info-alert {
+    background-color: #eff6ff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.info-alert p {
+    color: #1e40af;
+    font-size: 0.875rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+.input-success {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    transition: border-color 0.15s ease-in-out;
+}
+
+.input-success:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.input-success:disabled {
+    background-color: #f3f4f6;
+    cursor: not-allowed;
+}
+
+.error-message {
+    color: #dc2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.button-success {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: white;
+    background-color: #3b82f6;
+    cursor: pointer;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.button-success:hover:not(:disabled) {
+    background-color: #2563eb;
+}
+
+.button-success:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+}
+
+.button-success:disabled {
+    background-color: #d1d5db;
+    cursor: not-allowed;
+}
+
+/* Success state styles */
+.success-icon {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.success-icon svg {
+    width: 4rem;
+    height: 4rem;
+    color: #10b981;
+}
+
+.success-title {
+    color: #10b981;
+}
+
+/* Link button style */
+.link-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.75rem 1.5rem;
+    background-color: #10b981;
+    color: white;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.15s ease-in-out;
+}
+
+.link-button:hover {
+    background-color: #059669;
+}
+
+/* Responsive adjustments */
+@media (min-width: 640px) {
+    .container-success {
+        padding: 3rem;
     }
 }
 
-.container-success{
-    padding: 0 30px;
-}
-
-@media screen and (max-width: 900px){
-    .title-success{
-        font-size: 34px;
-    }
-
-    .subtitle-success{
-        font-size: 18px;
-    }
-
-    .button-success{
-        font-size: 14px;
+@media (min-width: 768px) {
+    .card-success {
+        padding: 3rem;
     }
 }
