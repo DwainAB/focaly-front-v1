@@ -56,19 +56,24 @@ function Payment() {
             setPassword('');
         }
 
-        const getCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
-        const items = getCartItems.map(item => ({
-            id: item.product.id,
-            title: item.product.title,
-            images: item.product.images,
-            price: item.price,
-            quantity: item.quantity,
-            startDate: item.startDate,
-            endDate: item.endDate,
-            priceUnit : parseFloat(item.product.price * orderSummary.daysDifference )
-        }));
-        setCartItems(items);
     }, []);
+
+    useEffect(() => {
+        const getCartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        if (orderSummary.daysDifference) {
+            const items = getCartItems.map(item => ({
+                id: item.product.id,
+                title: item.product.title,
+                images: item.product.images,
+                price: item.price,
+                quantity: item.quantity,
+                startDate: item.startDate,
+                endDate: item.endDate,
+                priceUnit: parseFloat(item.product.price) * orderSummary.daysDifference
+            }));
+            setCartItems(items);
+        }
+    }, [orderSummary.daysDifference]);
 
     useEffect(() => {
         if (deliveryMode === 'Click & Collect') {
@@ -167,6 +172,9 @@ function Payment() {
             return;
         }
 
+        console.log("orderSummary:", orderSummary);
+        console.log("cartItems avant envoi:", cartItems);
+
         const order = {
             clientId: userConnected.id ? userConnected.id : null,
             firstname: userConnected.firstname,
@@ -176,7 +184,7 @@ function Payment() {
             address: userConnected.address,
             zipCode: userConnected.zip_code,
             city: userConnected.city,
-            totalPrice: orderSummary.totalPrice,
+            totalPrice: parseFloat(orderSummary.totalPrice), 
             rentalDays: orderSummary.daysDifference,
             startDate: orderSummary.startDate,
             endDate: orderSummary.endDate,
@@ -184,6 +192,8 @@ function Payment() {
             delivery_mode: deliveryMode,
             products: cartItems,
         };
+
+        console.log("Ordre complet envoyé:", order);
 
         try {
             const response = await fetch('https://focaly-service.in/public/api/create-checkout-session', {

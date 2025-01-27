@@ -15,7 +15,8 @@ import {
     Package, 
     Clock,
     X,
-    CheckCircle
+    CheckCircle,
+    Calendar
 } from "lucide-react";
 import "./Dashboard.css"
 
@@ -32,10 +33,18 @@ function DashboardClient() {
     // Calculer le nombre total de pages
     const totalPages = Math.ceil(orders.length / ordersPerPage);
 
-    // Obtenir les commandes pour la page courante
+    // Modifiez la fonction getCurrentOrders comme ceci :
     const getCurrentOrders = () => {
+        // D'abord, trier les commandes par date de création (du plus récent au plus ancien)
+        const sortedOrders = [...orders].sort((a, b) => {
+            const dateA = new Date(a.createdAt);
+            const dateB = new Date(b.createdAt);
+            return dateB - dateA; // Ordre décroissant (plus récent au plus ancien)
+        });
+        
+        // Ensuite, récupérer la page courante
         const startIndex = (currentPage - 1) * ordersPerPage;
-        return orders.slice(startIndex, startIndex + ordersPerPage);
+        return sortedOrders.slice(startIndex, startIndex + ordersPerPage);
     };
 
     // Générer les numéros de page à afficher
@@ -154,9 +163,11 @@ function DashboardClient() {
 
     const getStepStatus = (stepOrder, currentStatus) => {
         const statusOrder = {
-            onHold: 0,
-            inPreparation: 1,
-            ready: 2
+            'pending': 0,
+            'waiting_start_date': 1,
+            'processing': 2,
+            'ready': 3,
+            'shipped': 4
         };
         const currentStep = statusOrder[currentStatus];
         
@@ -167,24 +178,36 @@ function DashboardClient() {
 
     const getStatusInfo = (status) => {
         const statusMap = {
-            onHold: {
-                label: "En attente de vérification",
+            'pending': {
+                label: "À vérifier",
                 icon: <Clock className="icon-status" />,
                 className: "status-pending"
             },
-            inPreparation: {
+            'waiting_start_date': {
+                label: "Location à venir",
+                icon: <Calendar className="icon-status" />,
+                className: "status-waiting"
+            },
+            'processing': {
                 label: "En préparation",
                 icon: <Package className="icon-status" />,
                 className: "status-preparing"
             },
-            ready: {
+            'ready': {
+                label: "Prêt",
+                icon: <CheckCircle className="icon-status" />,
+                className: "status-ready"
+            },
+            'shipped': {
                 label: "Expédiée",
                 icon: <Truck className="icon-status" />,
                 className: "status-shipped"
             }
         };
-        return statusMap[status] || statusMap.onHold;
+        return statusMap[status] || statusMap.pending;
     };
+
+    
 
     return (
         <>
@@ -328,7 +351,7 @@ function DashboardClient() {
                                 <div key={order.id} className="order-item" onClick={() => handleOrderClick(order)}>
                                     <div className="order-header">
                                         <div className="order-ref">
-                                            <p className="ref-number">{order.refOrder}</p>
+                                            <p className="ref-number">#{order.refOrder}</p>
                                             <p className="order-price">{order.totalPrice} €</p>
                                         </div>
                                         <div className={`order-status ${status.className}`}>
@@ -395,12 +418,22 @@ function DashboardClient() {
                                                 <Clock />
                                             }
                                         </div>
-                                        <span className="step-label">En attente de vérification</span>
+                                        <span className="step-label">À vérifier</span>
                                     </div>
                                     
                                     <div className={`step ${getStepStatus(1, selectedOrder.status)}`}>
                                         <div className="step-icon">
                                             {getStepStatus(1, selectedOrder.status) === 'completed' ? 
+                                                <CheckCircle /> : 
+                                                <Calendar />
+                                            }
+                                        </div>
+                                        <span className="step-label">Location à venir</span>
+                                    </div>
+                                    
+                                    <div className={`step ${getStepStatus(2, selectedOrder.status)}`}>
+                                        <div className="step-icon">
+                                            {getStepStatus(2, selectedOrder.status) === 'completed' ? 
                                                 <CheckCircle /> : 
                                                 <Package />
                                             }
@@ -408,7 +441,17 @@ function DashboardClient() {
                                         <span className="step-label">En préparation</span>
                                     </div>
                                     
-                                    <div className={`step ${getStepStatus(2, selectedOrder.status)}`}>
+                                    <div className={`step ${getStepStatus(3, selectedOrder.status)}`}>
+                                        <div className="step-icon">
+                                            {getStepStatus(3, selectedOrder.status) === 'completed' ? 
+                                                <CheckCircle /> : 
+                                                <CheckCircle />
+                                            }
+                                        </div>
+                                        <span className="step-label">Prêt</span>
+                                    </div>
+                                    
+                                    <div className={`step ${getStepStatus(4, selectedOrder.status)}`}>
                                         <div className="step-icon">
                                             <Truck />
                                         </div>

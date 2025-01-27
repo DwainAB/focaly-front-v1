@@ -1,35 +1,49 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import "./ProductSelected.css";
 import { apiService } from '../API/Api.jsx';
-import Loader from "../Loader/Loader.jsx"; // Assurez-vous d'importer le composant Loader
+import Loader from "../Loader/Loader.jsx";
 import Calendar from "../Calendar/Calendar.jsx";
 
 const ProductSelected = () => {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [isDescriptionOpen, setIsDescriptionOpen] = useState(false);
     const [isIncludedOpen, setIsIncludedOpen] = useState(false);
     const descriptionRef = useRef(null);
     const includedRef = useRef(null);
     const [product, setProduct] = useState(null);
-    const [loading, setLoading] = useState(true); 
-    const [calendarData, setCalendarData] = useState({ range: [new Date(), new Date()], quantity: 1 }); 
-    const [price, setPrice] = useState(0)
-    const [isAddToCartEnabled, setIsAddToCartEnabled] = useState(false); 
-
+    const [groupProducts, setGroupProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [calendarData, setCalendarData] = useState({ range: [new Date(), new Date()], quantity: 1 });
+    const [price, setPrice] = useState(0);
+    const [isAddToCartEnabled, setIsAddToCartEnabled] = useState(false);
 
     useEffect(() => {
-        setLoading(true); // Commence le chargement
-        apiService.getProductById(id)
-            .then(data => {
-                console.log('Données reçues du produit :', data);
-                setProduct(data);
-                setLoading(false); // Fin du chargement
-            })
-            .catch(error => {
-                console.error('Erreur lors du chargement du produit :', error);
-                setLoading(false); // Fin du chargement même en cas d'erreur
-            });
+        const fetchProductAndGroup = async () => {
+            try {
+                setLoading(true);
+                // Récupérer d'abord le produit
+                const productData = await apiService.getProductById(id);
+                setProduct(productData);
+
+                // Si le produit a des groupes, récupérer les produits de ce groupe
+                if (productData.groups && productData.groups.length > 0) {
+                    const productsData = await apiService.getProductsByCategory(productData.category);
+                    // Filtrer les produits qui appartiennent au même groupe
+                    const sameGroupProducts = productsData.filter(p => 
+                        p.groups && p.groups.some(g => productData.groups.includes(g))
+                    );
+                    setGroupProducts(sameGroupProducts);
+                }
+                setLoading(false);
+            } catch (error) {
+                console.error('Erreur lors du chargement:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchProductAndGroup();
     }, [id]);
 
     // Fonction pour ajuster la hauteur des sections
@@ -66,35 +80,27 @@ const ProductSelected = () => {
         }
     }, [isIncludedOpen]);
 
-    // Affiche le loader si en cours de chargement
-    if (loading) {
-        return <Loader />; // Affiche le loader
-    }
-
-    // Si le produit n'est pas trouvé, afficher un message d'erreur
-    if (!product) {
-        return <p>Produit non trouvé</p>;
-    }
+    const handleProductChange = (e) => {
+        const selectedProductId = e.target.value;
+        navigate(`/product/${selectedProductId}`);
+    };
 
     const handleDateChange = (data) => {
         setCalendarData(data);
         console.log(data);
         
-      
-        const daysDifference = Math.floor(data.daysDifference); 
+        const daysDifference = Math.floor(data.daysDifference);
         const quantityAndDays = daysDifference * data.quantity;
-      
-        setPrice(quantityAndDays * product.price); // Mettre à jour le prix en fonction de la quantité
+        
+        setPrice(quantityAndDays * product.price);
         setIsAddToCartEnabled(data.range[0] && data.range[1]);
-      };
-      
-    
+    };
 
     const formatDate = (date) => {
         const d = new Date(date);
         const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, '0'); 
-        const day = String(d.getDate()).padStart(2, '0'); 
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
         return `${year}-${month}-${day}`;
     };
 
@@ -108,10 +114,8 @@ const ProductSelected = () => {
             endDate: formatDate(calendarData.range[1]),
         };
     
-        // Récupérer les articles existants dans le localStorage
         const existingCartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     
-        // Vérifier si le produit existe déjà et si les dates se chevauchent
         const isDateOverlap = existingCartItems.some(item => {
             return item.product.id === product.id && 
                 ((cartItem.startDate >= item.startDate && cartItem.startDate <= item.endDate) || 
@@ -121,10 +125,9 @@ const ProductSelected = () => {
     
         if (isDateOverlap) {
             alert("Les dates choisies se chevauchent avec un produit déjà dans le panier !");
-            return; // Empêche l'ajout si les dates se chevauchent
+            return;
         }
     
-        // Vérifier si le produit existe déjà dans le panier
         const existingItemIndex = existingCartItems.findIndex(item => 
             item.product.id === product.id && 
             item.startDate === cartItem.startDate && 
@@ -139,11 +142,17 @@ const ProductSelected = () => {
             alert("Le produit a bien été ajouté à votre panier !");
         }
     
-        // Enregistrer la nouvelle liste dans le localStorage
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
-    
         console.log("Produit ajouté au panier :", cartItem);
     };
+
+    if (loading) {
+        return <Loader />;
+    }
+
+    if (!product) {
+        return <p>Produit non trouvé</p>;
+    }
 
     return (
         <div className='global-product-selected'>
@@ -154,18 +163,26 @@ const ProductSelected = () => {
 
                 <div className="container-product-selected-info">
                     <h1>{product.title}</h1>
-                    <select>
-                        <option value="">GoPro 11</option>
-                        <option value="">GoPro 12</option>
-                        <option value="">GoPro 13</option>
-                    </select>
+                    
+                    {groupProducts.length > 0 && (
+                        <select 
+                            value={product.id} 
+                            onChange={handleProductChange}
+                        >
+                            {groupProducts.map(p => (
+                                <option key={p.id} value={p.id}>
+                                    {p.title}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+
                     <p className="info-focaly">
                         Chez Focaly, vous recevez votre location chez vous 
                         <span style={{ color: "#F18989", fontWeight: "900" }}> 48h </span>
                         avant votre premier jour de location !
                     </p>
 
-                    {/* Section Description */}
                     <div className='container-collapse' onClick={() => toggleSection(descriptionRef, setIsDescriptionOpen, isDescriptionOpen)}>
                         <p>Description du produit</p>
                         <p>{isDescriptionOpen ? "-" : "+"}</p>
@@ -187,8 +204,14 @@ const ProductSelected = () => {
                     )}
 
                     <Calendar onDateChange={handleDateChange} price={price} product={product} productId={product.id} />
-                    <button className={`btn-add-to-cart ${!isAddToCartEnabled ? 'disabled' : ''}`} onClick={handleAddToCart} disabled={!isAddToCartEnabled}>Ajouter au panier</button> 
-                    </div>
+                    <button 
+                        className={`btn-add-to-cart ${!isAddToCartEnabled ? 'disabled' : ''}`} 
+                        onClick={handleAddToCart} 
+                        disabled={!isAddToCartEnabled}
+                    >
+                        Ajouter au panier
+                    </button>
+                </div>
             </div>
         </div>
     );

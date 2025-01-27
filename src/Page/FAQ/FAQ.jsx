@@ -142,31 +142,6 @@ const FAQ = () => {
                 ))}
             </div>
 
-            <div className="customer-service">
-                <h2 className='subtitle-faq'>Service Client</h2>
-                <p>
-                    <i className="icon-customer-service" /> 
-                    Notre service clientèle est disponible du lundi au dimanche de 8h à 20h30. 
-                    Délai de réponse moyen : 12h.
-                </p>
-
-                <form className="contact-form">
-                    <h3>Contactez-nous !</h3>
-                    <label>
-                        Email :
-                        <input type="email" name="email" />
-                    </label>
-                    <label>
-                        Nom :
-                        <input type="text" name="name" />
-                    </label>
-                    <label>
-                        Message :
-                        <textarea name="message"></textarea>
-                    </label>
-                    <button type="submit" className="btn-envoyer">Envoyer</button>
-                </form>
-            </div>
         </div>
     );
 };

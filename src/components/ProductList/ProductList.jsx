@@ -5,111 +5,154 @@ import { apiService } from '../API/Api.jsx';
 import Loader from "../Loader/Loader.jsx";
 
 const ProductList = ({ category }) => {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true); 
+   const [products, setProducts] = useState([]); // Produits sans groupe
+   const [groups, setGroups] = useState([]);
+   const [groupedProducts, setGroupedProducts] = useState([]); // Produits avec groupe
+   const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        setLoading(true); // Commence le chargement
-        if(category !== "accessories"){
-            apiService.getProductsByCategory(category)
-                .then(data => {
-                    console.log('Produits reçus :', data); // Log des produits reçus
-                    setProducts(data);
-                    setLoading(false); // Fin du chargement
-                })
-                .catch(error => {
-                    console.error('Erreur lors du chargement des produits :', error);
-                    setLoading(false); // Fin du chargement même en cas d'erreur
-                });
-        }else{
-            apiService.getAccessories()
-            .then(data =>{
-                console.log("Accessoires reçu :", data);
-                setProducts(data);
-                setLoading(false)
-            })
-            .catch(error=>{
-                console.error("Erreur lors du chargement des accessoires : ", error)
-                setLoading(false)
-            })
-        }
-    }, [category]);
+   useEffect(() => {
+       setLoading(true);
+       
+       Promise.all([
+           apiService.getGroupsByCategory(category),
+           category !== "accessories" ? 
+               apiService.getProductsByCategory(category) : 
+               apiService.getAccessories()
+       ])
+       .then(([groupsData, productsData]) => {
+           setGroups(groupsData);
+           
+           // Séparer les produits avec et sans groupes
+           const productsWithGroups = productsData.filter(product => 
+               product.groups && product.groups.length > 0
+           );
+           const productsWithoutGroups = productsData.filter(product => 
+               !product.groups || product.groups.length === 0
+           );
+           
+           setGroupedProducts(productsWithGroups);
+           setProducts(productsWithoutGroups);
+           setLoading(false);
+       })
+       .catch(error => {
+           console.error('Erreur:', error);
+           setLoading(false);
+       });
+   }, [category]);
 
-    // Permet d'afficher un titre en fonction de la catégorie trouvée
-    const getTitle = (category) => {
-        switch (category) {
-            case 'onBoardCamera':
-                return 'Caméra embarquées';
-            case 'photo':
-                return 'Appareils photos';
-            case 'drones':
-                return 'Drones';
-            case 'accessories':
-                return 'Accessoires';
-            case 'pack':
-                return 'Packs';
-            case 'professionnels':
-                return 'Pour les professionnels';
-            default:
-                return category;
-        }
-    };
-
-    // Si category = "professionnels" tu affiches ça
-    if (category === "professionnels") {
-        return (
-            <div className='container-form-professional'>
-                <h1>{getTitle(category)}</h1>
-                <h2>Nous sommes à votre écoute</h2>
-                <div className='container-form'>
-                    <form className="contact-form">
-                        <div className='top-form-professional'>
-                            <input type="text" name="name" placeholder='Nom' required />
-                            <input type="email" name="email" placeholder='Email' required />
-                        </div>
-                        <div>
-                            <textarea name="message" rows="4" placeholder='Message' required></textarea>
-                        </div>
-                        <button type="submit">Envoyer</button>
-                    </form>
-                </div>
-            </div>
+   const getGroupMinPriceProduct = (groupId) => {
+       // Filtrer les produits qui appartiennent à ce groupe
+       const productsInGroup = groupedProducts.filter(product => 
+            product.groups.includes(parseInt(groupId))
         );
-    }
 
-    // Affiche le loader si en cours de chargement
-    if (loading) {
-        return <Loader />; // Affiche le loader
-    }
+       console.log(groupId, productsInGroup);
+       
 
-    // Si products contient rien, affiche ça
-    if (!products || products.length === 0) {
-        return <p className='text-center my-5 fs-3 fw-bold'>Aucun produit n'a été trouvé dans cette catégorie.</p>;
-    }
+       if (productsInGroup.length === 0) return null;
 
-    // Si category contient quelque chose et est différent de professionnels, affiche ça
-    return (
-        <div>
-            <h1 className='title-collection'>{getTitle(category)}</h1>
-            <div className="product-list">
-                {Array.isArray(products) ? (
-                    products.map((product) => (
-                        <Link to={`/product/${product.id}`} key={product.id}>
+       // Convertir les prix de string en nombre et trouver le minimum
+       return productsInGroup.reduce((minProduct, currentProduct) => {
+           const minPrice = parseFloat(minProduct.price);
+           const currentPrice = parseFloat(currentProduct.price);
+           return currentPrice < minPrice ? currentProduct : minProduct;
+       }, productsInGroup[0]);
+   };
+
+   const getTitle = (category) => {
+       switch (category) {
+           case 'onBoardCamera':
+               return 'Caméra embarquées';
+           case 'photo':
+               return 'Appareils photos';
+           case 'drones':
+               return 'Drones';
+           case 'accessories':
+               return 'Accessoires';
+           case 'pack':
+               return 'Packs';
+           case 'professionnels':
+               return 'Pour les professionnels';
+           default:
+               return category;
+       }
+   };
+
+   if (category === "professionnels") {
+       return (
+           <div className='container-form-professional'>
+               <h1>{getTitle(category)}</h1>
+               <h2>Nous sommes à votre écoute</h2>
+               <div className='container-form'>
+                   <form className="contact-form">
+                       <div className='top-form-professional'>
+                           <input type="text" name="name" placeholder='Nom' required />
+                           <input type="email" name="email" placeholder='Email' required />
+                       </div>
+                       <div>
+                           <textarea name="message" rows="4" placeholder='Message' required></textarea>
+                       </div>
+                       <button type="submit">Envoyer</button>
+                   </form>
+               </div>
+           </div>
+       );
+   }
+
+   if (loading) {
+       return <Loader />;
+   }
+
+   if (!products || products.length === 0) {
+       return <p className='text-center my-5 fs-3 fw-bold'>Aucun produit n'a été trouvé dans cette catégorie.</p>;
+   }
+
+   return (
+       <div>
+           <h1 className='title-collection'>{getTitle(category)}</h1>
+
+           <div className="product-list">
+                {/* Affichage des groupes avec leur produit le moins cher */}
+                {groups && groups.length > 0 && groups.map((group) => {
+                    const cheapestProduct = getGroupMinPriceProduct(group.id);
+                    if (!cheapestProduct) return null;
+
+                    return (
+                        <Link to={`/product/${cheapestProduct.id}`} key={group.id}>
                             <div className="product">
-                                <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt={product.title} className="product-image" />
+                                <img 
+                                    src={`https://focaly-service.in/public/uploads/images/${cheapestProduct.images[0]}`} 
+                                    alt={group.name} 
+                                    className="product-image" 
+                                />
                                 <div className="info-product" style={{maxWidth: "350px"}}>
-                                    <h2 className="title-product-collection">{product.title}</h2>
-                                    <p className="price-product-collection">À partir de {product.price}€</p>
+                                    <h2 className="title-product-collection">{group.name}</h2>
+                                    <p className="price-product-collection">À partir de {cheapestProduct.price}€</p>
                                 </div>
                             </div>
                         </Link>
-                    ))
-                ) : (
-                    <p>Les produits ne sont pas disponibles pour le moment.</p>
-                )}
-            </div>
-        </div>
-    );
+                    );
+                })}
+
+                {/* Affichage uniquement des produits sans groupe */}
+                {products.map((product) => (
+                    <Link to={`/product/${product.id}`} key={product.id}>
+                        <div className="product">
+                            <img 
+                                src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} 
+                                alt={product.title} 
+                                className="product-image" 
+                            />
+                            <div className="info-product" style={{maxWidth: "350px"}}>
+                                <h2 className="title-product-collection">{product.title}</h2>
+                                <p className="price-product-collection">À partir de {product.price}€</p>
+                            </div>
+                        </div>
+                    </Link>
+                ))}
+           </div>
+       </div>
+   );
 };
 
 export default ProductList;

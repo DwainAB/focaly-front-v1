@@ -19,6 +19,9 @@ const Collection = () => {
       case 'accessoires':
         setCategory('accessories');
         break;
+      case 'drones':
+        setCategory('drones');
+        break;
       default:
         setCategory(normalizedCategoryURL);
     }

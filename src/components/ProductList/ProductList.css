@@ -22,7 +22,7 @@
 
 .product {
     width: 100% !important;
-    max-width: 460px !important;
+    max-width: 350px !important;
     border-radius: 10px;
     background-color: #fff;
     overflow: hidden;
@@ -35,6 +35,7 @@
     max-width: 450px !important;
     max-height: 360px !important;
     object-fit: cover !important;
+    height: 350px;
 }
 
 .product .info-product {
@@ -151,6 +152,8 @@
     margin: 0 auto !important;
     font-weight: 700 !important;
 }
+
+
 
 @media screen and (max-width: 1400px) {
     .title-collection {

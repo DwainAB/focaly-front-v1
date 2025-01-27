@@ -191,17 +191,73 @@ export const apiService = {
         }
     },
 
-    // Dans api.js
     createStripeIdentitySession: async (orderRef) => {
-        const response = await fetch(`${BASE_URL}/create-verification-session`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderRef }),
-        });
-        return response.json();
+        try {
+            const response = await fetch(`${BASE_URL}/create-verification-session`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderRef })
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || "Erreur lors de la création de la session");
+            }
+            
+            return response.json();
+        } catch (error) {
+            console.error("Erreur lors de la création de la session:", error);
+            throw error;
+        }
     },
+
+    // Dans Api.jsx, ajoutez cette méthode à votre apiService
+
+    checkVerificationStatus: async (orderRef) => {
+        const maxAttempts = 30; // Nombre maximum de tentatives
+        const delayBetweenAttempts = 2000; // 2 secondes entre chaque tentative
+    
+        const checkStatus = async () => {
+            try {
+                console.log(`Vérification du statut pour la commande: ${orderRef}`);  // Log au début de chaque vérification
+                const response = await fetch(`${BASE_URL}/webhook-response/${orderRef}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const result = await response.json();
+                console.log('Réponse de la vérification:', result);  // Log de la réponse
+                return result;
+            } catch (error) {
+                console.error('Erreur lors de la vérification du statut:', error);  // Log en cas d'erreur
+                throw error;
+            }
+        };
+    
+        let attempts = 0;
+        while (attempts < maxAttempts) {
+            console.log(`Tentative #${attempts + 1}`);  // Log pour chaque tentative
+    
+            const status = await checkStatus();
+            
+            // Si on a une réponse définitive, on la retourne
+            if (status.status === 'verified' || status.status === 'redacted' || status.status === "requires_input" || status.status ==="canceled") {
+                console.log(`Statut final de la vérification: ${status.status}`);  // Log lorsque le statut est final
+                return status;
+            }
+    
+            // Sinon, on attend avant de réessayer
+            console.log('Statut en cours, réessayer...');  // Log si le statut est encore en cours
+            await new Promise(resolve => setTimeout(resolve, delayBetweenAttempts));
+            attempts++;
+        }
+    
+        // Si on arrive ici, c'est qu'on a dépassé le nombre maximum de tentatives
+        console.error("Délai d'attente dépassé pour la vérification");  // Log en cas de dépassement du délai
+        throw new Error("Délai d'attente dépassé pour la vérification");
+    },
+    
 
     // Modifier une commande
     updateOrder: async (id, data) => {
@@ -225,7 +281,14 @@ export const apiService = {
         }
     },
     
-
+    getGroupsByCategory: async (category) => {
+        try {
+            const response = await fetch(`${BASE_URL}/group/category/${category}`);
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    }
 
 
 

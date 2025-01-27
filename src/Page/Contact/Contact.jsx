@@ -109,10 +109,10 @@ const Contact = () => {
                                 disabled={isLoading}
                             >
                                 <option value="">Sélectionnez un sujet</option>
-                                <option value="produit">Produit</option>
-                                <option value="commande">Commande</option>
-                                <option value="presse">Presse</option>
-                                <option value="autre">Autre</option>
+                                <option value="product">Produit</option>
+                                <option value="order">Commande</option>
+                                <option value="partnership">Partenariat</option>
+                                <option value="other">Autre</option>
                             </select>
                         </div>
 
