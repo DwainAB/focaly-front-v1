@@ -8,9 +8,11 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [quantityMax, setQuantityMax] = useState(product.global_stock);
+  const [quantityMax, setQuantityMax] = useState(0);
   const [daysDifference, setDaysDifference] = useState(0);
   const [unavailableDates, setUnavailableDates] = useState([]);
+  const [datesSelected, setDatesSelected] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const getDateUnavailable = async () => {
@@ -30,7 +32,6 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         });
   
         setUnavailableDates(allUnavailableDates);
-        setQuantityMax(data.product.global_stock);
       } catch (error) {
         console.error("Erreur lors de la récupération des dates indisponibles:", error);
       }
@@ -44,31 +45,6 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     return unavailableDates.includes(dateString) || isDateTodayOrTomorrow(new Date(date));
   };
 
-  const calculateAvailableQuantity = (startDate, endDate) => {
-    const dateCount = {};
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-
-    const formatDate = (date) => date.toISOString().split('T')[0];
-
-    for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
-      const dateString = formatDate(date);
-      if (unavailableDates.includes(dateString)) {
-        dateCount[dateString] = (dateCount[dateString] || 0) + 1;
-      }
-    }
-
-    let maxCount = 0;
-    for (const count of Object.values(dateCount)) {
-      if (count > maxCount) {
-        maxCount = count;
-      }
-    }
-
-    const availableQuantity = product.global_stock - maxCount;
-    setQuantityMax(availableQuantity);
-  };
-
   const isDateTodayOrTomorrow = (date) => {
     const today = new Date();
     const tomorrow = new Date(today);
@@ -79,6 +55,39 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     date.setHours(0, 0, 0, 0);
 
     return date.getTime() === today.getTime() || date.getTime() === tomorrow.getTime();
+  };
+
+  const fetchAvailableQuantity = async (startDate, endDate) => {
+    setIsLoading(true);
+    try {
+      const formattedStartDate = startDate.toISOString().split('T')[0];
+      const formattedEndDate = endDate.toISOString().split('T')[0];
+      
+      const data = await ProductsService.getQuantityAvailable(
+        productId,
+        formattedStartDate,
+        formattedEndDate
+      );
+      
+      setQuantityMax(data.available_quantity);
+      console.log(data)
+      setQuantity(1); // Réinitialiser la quantité à 1
+      
+      // Si la quantité disponible est 0, afficher un message d'erreur
+      if (data.available_quantity <= 0) {
+        setErrorMessage('Ce produit n\'est pas disponible pour les dates sélectionnées.');
+        setDatesSelected(false);
+      } else {
+        setErrorMessage('');
+        setDatesSelected(true);
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la quantité disponible:", error);
+      setErrorMessage('Erreur lors de la vérification de la disponibilité.');
+      setDatesSelected(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleDateChange = (range) => {
@@ -95,22 +104,15 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
     if (differenceInDays >= 4) {
       if (isDateUnavailable(startDate) || isDateUnavailable(endDate)) {
         setErrorMessage('Les dates sélectionnées chevauchent des dates indisponibles. Veuillez choisir une autre plage.');
+        setDatesSelected(false);
       } else {
         setDateRange(range);
-        setErrorMessage('');
-        setQuantity(1);
-
-        if (onDateChange) {
-          onDateChange({
-            range,
-            quantity: 1,
-            daysDifference: differenceInDays,
-          });
-        }
-        calculateAvailableQuantity(startDate, endDate);
+        // Appel API pour vérifier la disponibilité
+        fetchAvailableQuantity(startDate, endDate);
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
+      setDatesSelected(false);
     }
   };
 
@@ -123,35 +125,58 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
 
   const btnIncr = () => {
     if (quantity < quantityMax) {
-      setQuantity(quantity + 1);
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
       if (dateRange[0] && dateRange[1]) {
-        onDateChange({ range: dateRange, quantity: quantity + 1, daysDifference: daysDifference });
+        onDateChange({ 
+          range: dateRange, 
+          quantity: newQuantity, 
+          daysDifference: daysDifference 
+        });
       }
     }
   };
 
   const btnDecr = () => {
     if (quantity > 1) {
-      setQuantity(quantity - 1);
+      const newQuantity = quantity - 1;
+      setQuantity(newQuantity);
       if (dateRange[0] && dateRange[1]) {
-        onDateChange({ range: dateRange, quantity: quantity - 1, daysDifference: daysDifference });
+        onDateChange({ 
+          range: dateRange, 
+          quantity: newQuantity, 
+          daysDifference: daysDifference 
+        });
       }
     }
   };
 
+  useEffect(() => {
+    // Mettre à jour les données parentes lorsque la quantité change
+    if (datesSelected && dateRange[0] && dateRange[1]) {
+      onDateChange({
+        range: dateRange,
+        quantity: quantity,
+        daysDifference: daysDifference
+      });
+    }
+  }, [quantity, datesSelected]);
+
   return (
     <div className="custom-calendar-container">
       <p className='subtitle-calendar'>Choisissez vos dates de location (4 jours minimum)</p>
-      {quantityMax && (
+      
+      {datesSelected && (
         <div className='container-quantity'>
           <p>Quantité :</p>
           <div className="container-quantity-btn">
-            <button combattere onClick={btnDecr}>-</button>
+            <button disabled={!datesSelected || isLoading} onClick={btnDecr}>-</button>
             <p>{quantity}</p>
-            <button onClick={btnIncr}>+</button>
+            <button disabled={!datesSelected || isLoading} onClick={btnIncr}>+</button>
           </div>
         </div>
       )}
+      
       <Calendar
         onChange={handleDateChange}
         value={dateRange}
@@ -163,6 +188,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         className="custom-calendar"
         tileDisabled={({ date }) => isDateUnavailable(date)}
       />
+      
       <div className="calendar-inputs mb-3">
         <label htmlFor="start-date">Début de location :</label>
         <input
@@ -181,11 +207,22 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
           className="form-control mb-2"
         />
       </div>
-      {price === 0 ? (
-        <p className='price'>Prix total (TTC): {(product.price * quantity).toFixed(2)}€</p>
+      
+      {isLoading ? (
+        <p>Vérification de la disponibilité...</p>
       ) : (
-        <p className='price'>Prix total (TTC): {parseFloat(price).toFixed(2)}€</p>
+        datesSelected && (
+          <div>
+            <p>Disponible: {quantityMax} unité{quantityMax > 1 ? 's' : ''}</p>
+            {price === 0 ? (
+              <p className='price'>Prix total (TTC): {(product.price * quantity).toFixed(2)}€</p>
+            ) : (
+              <p className='price'>Prix total (TTC): {parseFloat(price).toFixed(2)}€</p>
+            )}
+          </div>
+        )
       )}
+      
       {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}
     </div>
   );

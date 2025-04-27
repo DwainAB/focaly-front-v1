@@ -158,6 +158,33 @@ class ProductsService {
             throw error;
         }
     }
+
+    static async getQuantityAvailable(productId, startDate, endDate){
+        try{
+            const response = await fetch("https://ysypvciwtuyxflkkxnzz.supabase.co/functions/v1/product-availability",{
+                method: "POST",
+                header: {
+                    'Content-Type': 'application/json',
+
+                },
+                body: JSON.stringify({
+                    product_id: productId,
+                    start_date: startDate,
+                    end_date: endDate
+                })
+            })
+
+            if(!response){
+                throw new Error(`Erreur HTTP: ${response.status}`);
+            }
+
+            const data = await response.json()
+            return data
+
+        }catch(error){
+            console.error("Erreur lors de la récupétation des quantitées", error)
+        }
+    }
 }
 
 export default ProductsService;
