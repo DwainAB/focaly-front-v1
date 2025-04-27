@@ -3,6 +3,7 @@ import "./ProductList.css";
 import { Link } from 'react-router-dom';
 import { apiService } from '../API/Api.jsx';
 import Loader from "../Loader/Loader.jsx";
+import ProductsService from '../../Services/Products.jsx';
 
 const ProductList = ({ category }) => {
    const [products, setProducts] = useState([]); // Produits sans groupe
@@ -16,7 +17,7 @@ const ProductList = ({ category }) => {
        Promise.all([
            apiService.getGroupsByCategory(category),
            category !== "accessories" ? 
-               apiService.getProductsByCategory(category) : 
+               ProductsService.getProductByCategory(category) : 
                apiService.getAccessories()
        ])
        .then(([groupsData, productsData]) => {
@@ -61,13 +62,13 @@ const ProductList = ({ category }) => {
 
    const getTitle = (category) => {
        switch (category) {
-           case 'onBoardCamera':
+           case 'a55ddd8a-a7f4-401a-a631-1c7db03733b8':
                return 'Caméra embarquées';
-           case 'photo':
-               return 'Appareils photos';
-           case 'drones':
+           case 'b2a067e2-813d-48be-9e09-8bff2b85b90c':
+               return 'Appareils photo';
+           case '02c9ee6c-242a-4175-9c37-24d6cbc56dba':
                return 'Drones';
-           case 'accessories':
+           case '76e1d025-90a0-4185-9af2-f4d3465a463a':
                return 'Accessoires';
            case 'pack':
                return 'Packs';
@@ -139,12 +140,12 @@ const ProductList = ({ category }) => {
                     <Link to={`/product/${product.id}`} key={product.id}>
                         <div className="product">
                             <img 
-                                src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} 
-                                alt={product.title} 
+                                src={product.mainImage} 
+                                alt={product.name} 
                                 className="product-image" 
                             />
                             <div className="info-product" style={{maxWidth: "350px"}}>
-                                <h2 className="title-product-collection">{product.title}</h2>
+                                <h2 className="title-product-collection">{product.name}</h2>
                                 <p className="price-product-collection">À partir de {product.price}€</p>
                             </div>
                         </div>

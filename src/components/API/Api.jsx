@@ -288,6 +288,15 @@ export const apiService = {
         } catch (error) {
             throw error;
         }
+    },
+
+    getPromoCodeByName: async (code) => {
+        try {
+            const response = await fetch(`${BASE_URL}/promo-codes/code/${code}`);
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
     }
 
 

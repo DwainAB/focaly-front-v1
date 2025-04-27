@@ -2,179 +2,117 @@ import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import './Calendar.css';
+import ProductsService from '../../Services/Products';
 
 const CustomCalendar = ({ onDateChange, price, product, productId }) => {
   const [dateRange, setDateRange] = useState([new Date(), new Date()]);
   const [errorMessage, setErrorMessage] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [quantityMax, setQuantityMax] = useState();
+  const [quantityMax, setQuantityMax] = useState(product.global_stock);
   const [daysDifference, setDaysDifference] = useState(0);
   const [unavailableDates, setUnavailableDates] = useState([]);
-  const [fullyBookedDates, setFullyBookedDates] = useState([]);
-
 
   useEffect(() => {
-    const quantityProduct = product.stock;
-    
     const getDateUnavailable = async () => {
       try {
-        const response = await fetch(`https://focaly-service.in/public/api/product/${productId}/reservations`);
-        if (!response.ok) {
-          throw new Error(`Erreur lors de la récupération des dates : ${response.status}`);
-        }
-        const data = await response.json();
+        const data = await ProductsService.getDateUnavailable(productId);
         const allUnavailableDates = [];
-
-        data.reservations.forEach(reservation => {
-          const startDate = new Date(reservation.startDate);
-          const endDate = new Date(reservation.endDate);
-          
-          startDate.setDate(startDate.getDate());  
-          endDate.setDate(endDate.getDate() + 7);  // On ajoute 7 jours après la date de fin
-
-          for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
+  
+        data.unavailable_periods.forEach(period => {
+          const startDate = new Date(period.start_date);
+          const endDate = new Date(period.end_date);
+  
+          startDate.setDate(startDate.getDate() - 1);
+  
+          for (let date = new Date(startDate); date < endDate; date.setDate(date.getDate() + 1)) {
             allUnavailableDates.push(date.toISOString().split('T')[0]);
           }
         });
-
-        //console.log("Toutes les dates indisponibles :", allUnavailableDates);
-        setUnavailableDates(allUnavailableDates)
-        // Fonction pour obtenir les dates totalement réservées
-        const getFullyBookedDates = (allUnavailableDates, quantityProduct) => {
-          const dateOccurrences = {};
-
-          // Compter les occurrences de chaque date
-          allUnavailableDates.forEach(date => {
-            if (dateOccurrences[date]) {
-              dateOccurrences[date]++;
-            } else {
-              dateOccurrences[date] = 1;
-            }
-          });
-
-          // Filtrer les dates qui atteignent le nombre maximal de réservations
-          const fullyBookedDates = Object.keys(dateOccurrences).filter(date => dateOccurrences[date] >= quantityProduct);
-          //console.log("Dates totalement réservées :", fullyBookedDates);
-          return fullyBookedDates;
-        };
-
-        // Obtenir les dates totalement réservées et mettre à jour l'état
-        const fullyBooked = getFullyBookedDates(allUnavailableDates, quantityProduct);
-        setFullyBookedDates(fullyBooked);
-
+  
+        setUnavailableDates(allUnavailableDates);
+        setQuantityMax(data.product.global_stock);
       } catch (error) {
-        console.error(error);
+        console.error("Erreur lors de la récupération des dates indisponibles:", error);
       }
     };
-
+  
     getDateUnavailable();
-  }, [productId, product.stock]);
+  }, [productId]);
 
-  // Vérifie si une plage de dates sélectionnée chevauche les dates bloquées
   const isDateUnavailable = (date) => {
     const dateString = date.toISOString().split('T')[0];
-    return fullyBookedDates.includes(dateString) || isDateTodayOrTomorrow(new Date(date));
+    return unavailableDates.includes(dateString) || isDateTodayOrTomorrow(new Date(date));
   };
 
-  const logBookedDatesInRange = (startDate, endDate) => {
-    const dateCount = {}; 
+  const calculateAvailableQuantity = (startDate, endDate) => {
+    const dateCount = {};
     const start = new Date(startDate);
     const end = new Date(endDate);
-  
+
     const formatDate = (date) => date.toISOString().split('T')[0];
-  
-    // Vérifie chaque date dans la plage
+
     for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
-      const dateString = formatDate(date);  // Formate la date dans le bon format
-  
-      // Vérifie si cette date est réservée dans 'unavailableDates'
-      for (let i = 0; i < unavailableDates.length; i++) {
-        if (unavailableDates[i] === dateString) {
-          // Compte les occurrences de la date
-          if (dateCount[dateString]) {
-            dateCount[dateString]++;
-          } else {
-            dateCount[dateString] = 1;
-          }
-        }
+      const dateString = formatDate(date);
+      if (unavailableDates.includes(dateString)) {
+        dateCount[dateString] = (dateCount[dateString] || 0) + 1;
       }
     }
-  
-    // Trouver la date avec le plus grand nombre d'occurrences
-    let maxDate = '';
+
     let maxCount = 0;
-  
-    for (const date in dateCount) {
-      if (dateCount[date] > maxCount) {
-        maxDate = date;
-        maxCount = dateCount[date];
+    for (const count of Object.values(dateCount)) {
+      if (count > maxCount) {
+        maxCount = count;
       }
     }
-  
-    // Calculer la soustraction entre la quantité et le nombre d'occurrences
-    const availableQuantity = product.stock - maxCount;
-  
-    //console.log("Date avec la plus grande occurrence :", maxDate);
-    //console.log("Nombre d'occurrences :", maxCount);
-    //console.log("Quantité restante disponible :", availableQuantity);
-    setQuantityMax(availableQuantity)
-  
-    if (Object.keys(dateCount).length > 0) {
-      console.log("Jours réservés entre ces dates : ", dateCount);
-    } else {
-      console.log("Aucune réservation dans cette plage.");
-    }
+
+    const availableQuantity = product.global_stock - maxCount;
+    setQuantityMax(availableQuantity);
   };
 
   const isDateTodayOrTomorrow = (date) => {
     const today = new Date();
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
-  
+
     today.setHours(0, 0, 0, 0);
     tomorrow.setHours(0, 0, 0, 0);
     date.setHours(0, 0, 0, 0);
-  
+
     return date.getTime() === today.getTime() || date.getTime() === tomorrow.getTime();
   };
-  
-  
 
   const handleDateChange = (range) => {
     const startDate = range[0];
     const endDate = range[1];
-  
+
     startDate.setHours(0, 0, 0, 0);
     endDate.setHours(0, 0, 0, 0);
-  
+
     const differenceInTime = endDate - startDate;
     const differenceInDays = differenceInTime / (1000 * 3600 * 24) + 1;
     setDaysDifference(differenceInDays);
-  
-    // Modifiez la quantité seulement après avoir validé la plage de dates
+
     if (differenceInDays >= 4) {
       if (isDateUnavailable(startDate) || isDateUnavailable(endDate)) {
         setErrorMessage('Les dates sélectionnées chevauchent des dates indisponibles. Veuillez choisir une autre plage.');
       } else {
         setDateRange(range);
         setErrorMessage('');
-        setQuantity(1);  // Assurez-vous que la quantité est réinitialisée à 1 ici
-  
+        setQuantity(1);
+
         if (onDateChange) {
           onDateChange({
             range,
-            quantity: 1,  // Envoyer la quantité de manière explicite
+            quantity: 1,
             daysDifference: differenceInDays,
           });
         }
-        logBookedDatesInRange(startDate, endDate);
+        calculateAvailableQuantity(startDate, endDate);
       }
     } else {
       setErrorMessage('Veuillez sélectionner une plage de 4 jours minimum.');
     }
   };
-  
-
 
   const navigationLabel = ({ date, view }) => {
     if (view === 'month') {
@@ -208,7 +146,7 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         <div className='container-quantity'>
           <p>Quantité :</p>
           <div className="container-quantity-btn">
-            <button onClick={btnDecr}>-</button>
+            <button combattere onClick={btnDecr}>-</button>
             <p>{quantity}</p>
             <button onClick={btnIncr}>+</button>
           </div>
@@ -223,9 +161,8 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
         prev2Label={null}
         next2Label={null}
         className="custom-calendar"
-        tileDisabled={({ date }) => isDateUnavailable(date)} // Désactive les dates totalement réservées
+        tileDisabled={({ date }) => isDateUnavailable(date)}
       />
-
       <div className="calendar-inputs mb-3">
         <label htmlFor="start-date">Début de location :</label>
         <input
@@ -249,7 +186,6 @@ const CustomCalendar = ({ onDateChange, price, product, productId }) => {
       ) : (
         <p className='price'>Prix total (TTC): {parseFloat(price).toFixed(2)}€</p>
       )}
-
       {errorMessage && <p className="text-danger mt-2">{errorMessage}</p>}
     </div>
   );

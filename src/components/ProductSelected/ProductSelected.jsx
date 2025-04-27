@@ -4,6 +4,7 @@ import "./ProductSelected.css";
 import { apiService } from '../API/Api.jsx';
 import Loader from "../Loader/Loader.jsx";
 import Calendar from "../Calendar/Calendar.jsx";
+import ProductsService from '../../Services/Products.jsx';
 
 const ProductSelected = () => {
     const { id } = useParams();
@@ -18,25 +19,44 @@ const ProductSelected = () => {
     const [calendarData, setCalendarData] = useState({ range: [new Date(), new Date()], quantity: 1 });
     const [price, setPrice] = useState(0);
     const [isAddToCartEnabled, setIsAddToCartEnabled] = useState(false);
+    const [includeInRetail, setIncludeInRetail] = useState(null)
 
     useEffect(() => {
         const fetchProductAndGroup = async () => {
             try {
                 setLoading(true);
                 // Récupérer d'abord le produit
-                const productData = await apiService.getProductById(id);
+                const productData = await ProductsService.getProductById(id);
                 setProduct(productData);
-
-                // Si le produit a des groupes, récupérer les produits de ce groupe
-                if (productData.groups && productData.groups.length > 0) {
-                    const productsData = await apiService.getProductsByCategory(productData.category);
-                    // Filtrer les produits qui appartiennent au même groupe
-                    const sameGroupProducts = productsData.filter(p => 
-                        p.groups && p.groups.some(g => productData.groups.includes(g))
-                    );
-                    setGroupProducts(sameGroupProducts);
+                setIncludeInRetail(productData.include_in_retail) 
+                
+                if(Array.isArray(productData.include_in_retail)){
+                    if(productData.include_in_retail.length > 0){
+                        setIncludeInRetail(productData.include_in_retail)
+                    }else{
+                        setIncludeInRetail(null)
+                        
+                    }
                 }
+                           
+                
+                if (Array.isArray(productData.groups)) {
+                    
+                    if (productData.groups.length > 0) {
+                        const productsData = await apiService.getProductsByCategory(productData.category);
+                        
+                        const sameGroupProducts = productsData.filter(p => 
+                            Array.isArray(p.groups) && p.groups.some(g => productData.groups.includes(g))
+                        );
+                        setGroupProducts(sameGroupProducts);
+                    }
+                } else {
+                    console.log("Pas de groups ou format invalide:", productData.groups);
+                    setGroupProducts([]);
+                }
+        
                 setLoading(false);
+
             } catch (error) {
                 console.error('Erreur lors du chargement:', error);
                 setLoading(false);
@@ -87,7 +107,6 @@ const ProductSelected = () => {
 
     const handleDateChange = (data) => {
         setCalendarData(data);
-        console.log(data);
         
         const daysDifference = Math.floor(data.daysDifference);
         const quantityAndDays = daysDifference * data.quantity;
@@ -143,7 +162,6 @@ const ProductSelected = () => {
         }
     
         localStorage.setItem('cartItems', JSON.stringify(existingCartItems));
-        console.log("Produit ajouté au panier :", cartItem);
     };
 
     if (loading) {
@@ -153,12 +171,14 @@ const ProductSelected = () => {
     if (!product) {
         return <p>Produit non trouvé</p>;
     }
+    
+    
 
     return (
         <div className='global-product-selected'>
             <div className="container-product-selected">
                 <div className="container-product-selected-img">
-                    <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt="product" />
+                    <img src={product.images[0].path_url} alt="product" />
                 </div>
 
                 <div className="container-product-selected-info">
@@ -191,14 +211,17 @@ const ProductSelected = () => {
                         <p>{product.description}</p>
                     </div>
 
-                    {product.include_in_retal !== null && (
+                    {includeInRetail !== null  && (
                         <>
                             <div className='container-collapse' onClick={() => toggleSection(includedRef, setIsIncludedOpen, isIncludedOpen)}>
                                 <p>Inclu dans la location</p>
                                 <p>{isIncludedOpen ? "-" : "+"}</p>
                             </div>
                             <div className={`collapse-content-product ${isIncludedOpen ? 'collapse-open' : ''}`} ref={includedRef}>
-                                <p>{product.include_in_retal}</p>
+                                {/* {includeInRetail.map((iir) =>
+                                    <p>- {iir}</p>
+                                )} */}
+                                <p>Vous pouvez ajouter des accessoires supplémentaires en cliquant sur "Étape Suivante".</p>
                             </div>
                         </>
                     )}

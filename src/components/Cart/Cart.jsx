@@ -8,21 +8,28 @@ import { useNavigate } from 'react-router-dom';
 const Cart = () => {
   const [cartItems, setCartItems] = React.useState([]);
   const [totalPrice, setTotalPrice] = React.useState('');
+  const [originalPrice, setOriginalPrice] = React.useState('');
+  const [discountedPrice, setDiscountedPrice] = React.useState('');
   const [accessoryItems, setAccessoryItems] = React.useState([]); 
   const [productAccessories, setProductAccessories] = React.useState({});
   const [addedAccessoryQuantities, setAddedAccessoryQuantities] = React.useState({}); 
-  const [comment, setComment] = React.useState('')
-  const navigate = useNavigate()
+  const [comment, setComment] = React.useState('');
+  const [promoCode, setPromoCode] = React.useState('');
+  const [promoError, setPromoError] = React.useState('');
+  const [promoSuccess, setPromoSuccess] = React.useState(null);
+  const [promoName, setPromoName] = React.useState('');
+  const [isPromoCodeInputDisabled, setIsPromoCodeInputDisabled] = React.useState(false);
+  const navigate = useNavigate();
 
   React.useEffect(() => {
     const items = JSON.parse(localStorage.getItem('cartItems'));
     if (items) {
-      console.log(items);
       setCartItems(items);
       let calculatePrice = 0;
       for (let i = 0; i < items.length; i++) {
         calculatePrice += items[i].price;      
       }
+      setOriginalPrice(calculatePrice.toFixed(2));
       setTotalPrice(calculatePrice.toFixed(2));
     }
   }, []);
@@ -31,49 +38,123 @@ const Cart = () => {
     if (cartItems.length > 0) {
       const firstItem = cartItems[0];
       const { startDate, endDate, daysDifference } = firstItem;
+      
+      let newTotalPrice;
+      if (promoSuccess) {
+        if (promoSuccess.type === 'percentage') {
+          const reduction = (parseFloat(originalPrice) * promoSuccess.amount) / 100;
+          newTotalPrice = (parseFloat(originalPrice) - reduction).toFixed(2);
+        } else if (promoSuccess.type === 'fixedDiscount') {
+          newTotalPrice = (parseFloat(originalPrice) - promoSuccess.amount).toFixed(2);
+          if (newTotalPrice < 0) newTotalPrice = '0.00';
+        }
+      } else {
+        newTotalPrice = cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+      }
   
-      // Calculer le totalPrice actualisé
-      const newTotalPrice = cartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
-  
-      // Mettre à jour la clé orderSummary dans le localStorage
       localStorage.setItem('orderSummary', JSON.stringify({
         totalPrice: newTotalPrice,
         daysDifference,
         startDate,
         endDate,
+        promoCode: promoSuccess ? promoSuccess.code : null,
+        discount: promoSuccess ? {
+          type: promoSuccess.type,
+          amount: promoSuccess.amount
+        } : null
       }));
     } else {
-      // Supprimer la clé si le panier est vide
       localStorage.removeItem('orderSummary');
     }
-  }, [cartItems]);
-  
-  
+  }, [cartItems, promoSuccess, originalPrice]);
+
+  React.useEffect(() => {
+    const storedPromoCode = localStorage.getItem('promoCode');
+    if (storedPromoCode) {
+      setPromoCode(storedPromoCode);
+      handlePromoCodeSubmit(); // Appliquer le code promo
+      setIsPromoCodeInputDisabled(true); // Désactiver l'input
+    }
+  }, []);
+
+  const handlePromoCodeSubmit = async () => {
+    if (!promoCode.trim()) {
+      setPromoError('Veuillez entrer un code promo');
+      return;
+    }
+
+    try {
+      const response = await apiService.getPromoCodeByName(promoCode);
+      if (response.message === 'Code promo non trouvé') {
+        setPromoError('Code promo invalide');
+        setPromoSuccess(null);
+        setTotalPrice(originalPrice);
+        // Supprimer le code promo du localStorage si invalide
+        localStorage.removeItem('promoCodeData');
+      } else {
+        setPromoError('');
+        setPromoSuccess(response);
+        setPromoName(response.code);
+        
+        let newPrice;
+        if (response.type === 'percentage') {
+          const reduction = (parseFloat(originalPrice) * response.amount) / 100;
+          newPrice = (parseFloat(originalPrice) - reduction).toFixed(2);
+        } else if (response.type === 'fixedDiscount') {
+          newPrice = (parseFloat(originalPrice) - response.amount).toFixed(2);
+          if (newPrice < 0) newPrice = '0.00';
+        }
+        
+        setTotalPrice(newPrice);
+        setDiscountedPrice(newPrice);
+
+        // Sauvegarder le code promo et ses données dans le localStorage
+        const promoData = {
+          code: response.code,
+          type: response.type,
+          amount: response.amount,
+          discountedPrice: newPrice,
+          originalPrice: originalPrice
+        };
+        localStorage.setItem('promoCodeData', JSON.stringify(promoData));
+      }
+    } catch (error) {
+      setPromoError('Une erreur est survenue');
+      setPromoSuccess(null);
+      localStorage.removeItem('promoCodeData');
+    }
+};
 
   const handleRemoveItem = (index) => {
     const removedItem = cartItems[index];
     
-    // Supprimer l'article du panier
     const updatedItems = cartItems.filter((_, i) => i !== index);
     setCartItems(updatedItems);
     localStorage.setItem('cartItems', JSON.stringify(updatedItems));
     
-    // Recalculer le prix total après suppression
     let newTotalPrice = updatedItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+    setOriginalPrice(newTotalPrice);
+    
+    if (promoSuccess) {
+      if (promoSuccess.type === 'percentage') {
+        const reduction = (parseFloat(newTotalPrice) * promoSuccess.amount) / 100;
+        newTotalPrice = (parseFloat(newTotalPrice) - reduction).toFixed(2);
+      } else if (promoSuccess.type === 'fixedDiscount') {
+        newTotalPrice = (parseFloat(newTotalPrice) - promoSuccess.amount).toFixed(2);
+        if (newTotalPrice < 0) newTotalPrice = '0.00';
+      }
+    }
+    
     setTotalPrice(newTotalPrice);
     
-    // Si c'est un accessoire, réinitialiser la quantité
     if (removedItem.product.category === 'accessories') {
       setAddedAccessoryQuantities(prev => ({
         ...prev,
-        [removedItem.product.id]: 0 // Remettre la quantité à 0 pour l'accessoire supprimé
+        [removedItem.product.id]: 0
       }));
     }
   };
-  
-  
 
-  // Fonction pour formater les dates au format JJ/MM/AAAA
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = String(date.getDate()).padStart(2, '0');
@@ -89,13 +170,11 @@ const Cart = () => {
         accessories: item.product.accessories ? item.product.accessories.split(',').filter(id => id !== '').map(Number) : []
       }));
       setAccessoryItems(newAccessoryItems);
-      console.log(newAccessoryItems); 
     }
   }, [cartItems]); 
 
   const fetchProductAccessories = async (title, accessoryIds) => {
     try {
-      // Envoyer tous les IDs dans un seul appel
       const accessories = await apiService.getAccessoriesBatch({ ids: accessoryIds });
       setProductAccessories(prev => ({
         ...prev,
@@ -116,8 +195,6 @@ const Cart = () => {
     }
   }, [accessoryItems]);
 
-
-
   const handleAddAccessory = (accessory, parentProduct) => {
     const parentItem = cartItems.find(item => item.product.title === parentProduct);
     
@@ -135,8 +212,20 @@ const Cart = () => {
           setCartItems(updatedCartItems);
           localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
 
-          const newTotalPrice = updatedCartItems.reduce((total, item) => total + item.price, 0);
-          setTotalPrice(newTotalPrice.toFixed(2));
+          let newTotalPrice = updatedCartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+          setOriginalPrice(newTotalPrice);
+          
+          if (promoSuccess) {
+            if (promoSuccess.type === 'percentage') {
+              const reduction = (parseFloat(newTotalPrice) * promoSuccess.amount) / 100;
+              newTotalPrice = (parseFloat(newTotalPrice) - reduction).toFixed(2);
+            } else if (promoSuccess.type === 'fixedDiscount') {
+              newTotalPrice = (parseFloat(newTotalPrice) - promoSuccess.amount).toFixed(2);
+              if (newTotalPrice < 0) newTotalPrice = '0.00';
+            }
+          }
+          
+          setTotalPrice(newTotalPrice);
 
           setAddedAccessoryQuantities(prev => ({
             ...prev,
@@ -144,7 +233,6 @@ const Cart = () => {
           }));
         }
       } else {
-
         const newAccessoryItem = {
           product: accessory,
           startDate: parentItem.startDate,
@@ -158,10 +246,21 @@ const Cart = () => {
         setCartItems(updatedCartItems);
         localStorage.setItem('cartItems', JSON.stringify(updatedCartItems));
 
-        const newTotalPrice = updatedCartItems.reduce((total, item) => total + item.price, 0);
-        setTotalPrice(newTotalPrice.toFixed(2));
+        let newTotalPrice = updatedCartItems.reduce((total, item) => total + item.price, 0).toFixed(2);
+        setOriginalPrice(newTotalPrice);
+        
+        if (promoSuccess) {
+          if (promoSuccess.type === 'percentage') {
+            const reduction = (parseFloat(newTotalPrice) * promoSuccess.amount) / 100;
+            newTotalPrice = (parseFloat(newTotalPrice) - reduction).toFixed(2);
+          } else if (promoSuccess.type === 'fixedDiscount') {
+            newTotalPrice = (parseFloat(newTotalPrice) - promoSuccess.amount).toFixed(2);
+            if (newTotalPrice < 0) newTotalPrice = '0.00';
+          }
+        }
+        
+        setTotalPrice(newTotalPrice);
 
-        // Mettre à jour l'état des quantités ajoutées
         setAddedAccessoryQuantities(prev => ({
           ...prev,
           [accessory.id]: 1
@@ -181,17 +280,14 @@ const Cart = () => {
     }
   };
 
-  
   const handlePlaceOrder = () => {
     if (comment) {
       localStorage.setItem('comment', comment);
     } else {
       localStorage.removeItem('comment');
     }
-
-    navigate('/paiement')
+    navigate('/paiement');
   };
-
 
   return (
     <>
@@ -241,13 +337,61 @@ const Cart = () => {
           <div className="container-shopping-cart-price">
             <div className="price">
               <p>Total</p>
-              <p>{totalPrice}€</p>
+              {promoSuccess ? (
+                <div className="price-details">
+                  <p className="original-price">{originalPrice}€</p>
+                  <div style={{ display: 'flex', flexDirection: 'row', alignItems: "center", gap: "10px" }}>
+                    <p className="discount-info">
+                      {promoSuccess.type === 'percentage' 
+                        ? `(-${promoSuccess.amount}%)`
+                        : `(-${promoSuccess.amount}€)`
+                      }
+                    </p>
+                    <p className="discounted-price"> {totalPrice}€</p>
+                  </div>
+                </div>
+              ) : (
+                <p>{totalPrice}€</p>
+              )}
             </div>
             <p className='taxe-price'>Taxes incluses. Frais d'expédition calculés à l'étape de paiement.</p>
-            <textarea placeholder='Note de commande' as="textarea" rows={3} resize="vertical" value={comment} onChange={handleCommentChange}></textarea>
-            <div className='container-button-price'>
-              <button onClick={handlePlaceOrder} className='button-paiement'>Passer la commande</button></div>
+            <textarea 
+              placeholder='Note de commande' 
+              rows={3} 
+              value={comment} 
+              onChange={handleCommentChange}
+            />
+            {promoName && (
+              <p className="promo-name-message">{promoName}</p>
+            )}
+            <div className="promo-code-section">
+              <div className="promo-code-input">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Entrer un code promo"
+                  className="input-promo-code"
+                  disabled={isPromoCodeInputDisabled}
+                />
+                <button 
+                  onClick={handlePromoCodeSubmit}
+                  className="button-promo-code"
+                  disabled={isPromoCodeInputDisabled}
+                >
+                  Appliquer
+                </button>
+              </div>
+              {promoError && (
+                <p className="promo-error-message">{promoError}</p>
+              )}
             </div>
+            <div className='container-button-price'>
+              <button onClick={handlePlaceOrder} className='button-paiement'>
+                Passer la commande
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
@@ -289,7 +433,6 @@ const Cart = () => {
           )
         ))}
       </div>
-
     </>
   );
 };

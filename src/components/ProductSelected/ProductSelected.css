@@ -84,10 +84,15 @@
     line-height: 20px;
 }
 
+.collapse-content-product p{
+    font-weight: 600;
+}
+
 .collapse-open {
-    height: auto; /* Hauteur automatique pour le contenu */
-    padding-top: 20px; /* Ajoute du padding en haut lorsqu'il est ouvert */
-    padding-bottom: 30px; /* Ajoute du padding en bas lorsqu'il est ouvert */
+    height: auto; 
+    padding-top: 20px; 
+    padding-bottom: 30px; 
+    background-color: rgb(249, 249, 249);
 }
 
 .container-collapse {

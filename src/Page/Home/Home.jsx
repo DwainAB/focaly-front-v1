@@ -8,6 +8,13 @@ import './Home.css';
 
 const Home = () => {
 
+    useEffect(() => {
+        const path = window.location.pathname;
+        const reference = path.split('/').pop();
+        if (reference) {
+            localStorage.setItem('promoCode', reference);
+        }
+    }, []);
 
     return (
         <>

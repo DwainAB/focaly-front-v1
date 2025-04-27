@@ -66,7 +66,7 @@
   border: 2px solid rgba(26, 26, 26, 0.1);
   padding: 15px;
   border-radius: 20px;
-  max-height: 310px;
+  max-height: 400px;
 }
 
 .price{
@@ -258,6 +258,88 @@
 }
 
 
+.promo-code-section {
+  margin: 20px 0;
+}
+
+.promo-code-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.input-promo-code {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.button-promo-code {
+  padding: 8px 16px;
+  background-color: #000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.button-promo-code:hover {
+  background-color: #333;
+}
+
+.promo-error-message {
+  color: #dc3545;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.promo-success-message {
+  color: #28a745;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.promo-name-message{
+  font-size: 12px;
+  border: 2px solid black;
+  padding: 5px;
+  border-radius: 20px;
+  width: 100%;
+  display: inline;
+}
+
+.price-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.price .original-price {
+  text-decoration: line-through;
+  color: #999;
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.price .discounted-price {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin: 0;
+}
+
+.price .discount-info {
+  color: #28a745;
+  font-size: 0.9em;
+  margin: 0;
+}
+
+.promo-name-message {
+  font-size: 0.9em;
+  margin: 10px 0;
+}
 
 @media screen and (max-width: 1530px) {
   .container-shopping-cart{

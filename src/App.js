@@ -55,7 +55,7 @@ const App = () => {
             <div>
                 <TopNavbar />
                 <Routes>
-                    <Route path="/" element={<Home />} />
+                    <Route path="/:reference?" element={<Home />} />
                     <Route path="/collection/:categoryURL" element={<Collection />} />
                     <Route path="/conditions-generales" element={<ConditionsGenerales />} />
                     <Route path="/mentions-legales" element={<MentionsLegales />} />

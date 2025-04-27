@@ -20,7 +20,9 @@ function Payment() {
         totalPrice: '',
         endDate: '',
         startDate: '',
-        daysDifference: ''
+        daysDifference: '',
+        promoCode: null,
+        originalPrice: null
     });
 
     const [cartItems, setCartItems] = useState([]);
@@ -30,32 +32,33 @@ function Payment() {
         return new Date(dateString).toLocaleDateString('fr-FR', options);
     };
 
-
-    
     useEffect(() => {
         const getUserConnected = JSON.parse(localStorage.getItem("user"));
         const getSummaryOrder = JSON.parse(localStorage.getItem("orderSummary"));
         const getComment = localStorage.getItem('comment');
-
+        const getPromoCode = JSON.parse(localStorage.getItem("promoCodeData"));
+    
         if (getComment) {
             setComment(getComment);
         }
-
+    
         if (getSummaryOrder) {
+            const finalPrice = getPromoCode ? getPromoCode.discountedPrice : getSummaryOrder.totalPrice;
             setOrderSummary({
-                totalPrice: getSummaryOrder.totalPrice,
+                totalPrice: finalPrice,
                 daysDifference: getSummaryOrder.daysDifference,
                 startDate: getSummaryOrder.startDate,
-                endDate: getSummaryOrder.endDate
+                endDate: getSummaryOrder.endDate,
+                promoCode: getPromoCode ? getPromoCode.code : null,
+                originalPrice: getPromoCode ? getPromoCode.originalPrice : null
             });
         }
-
+    
         if (getUserConnected) {
             setUserConnected(getUserConnected);
             setEmail('');
             setPassword('');
         }
-
     }, []);
 
     useEffect(() => {
@@ -147,19 +150,16 @@ function Payment() {
     const handlePayment = async (event) => {
         event.preventDefault();
 
-            // Vérification des champs obligatoires
         if (!userConnected.firstname || !userConnected.lastname || !userConnected.email || !userConnected.phone) {
             alert("Veuillez remplir tous les champs d'information personnelle");
             return;
         }
 
-        // Vérification de la méthode de livraison
         if (!deliveryMode) {
             alert("Veuillez choisir une méthode de livraison");
             return;
         }
 
-        // Vérification des champs spécifiques selon la méthode de livraison
         if (deliveryMode === "A domicile") {
             if (!userConnected.address || !userConnected.zip_code || !userConnected.city) {
                 alert("Veuillez remplir tous les champs d'adresse");
@@ -172,8 +172,9 @@ function Payment() {
             return;
         }
 
-        console.log("orderSummary:", orderSummary);
-        console.log("cartItems avant envoi:", cartItems);
+        const getPromoCode = JSON.parse(localStorage.getItem("promoCodeData"));
+        const finalPrice = getPromoCode ? parseFloat(getPromoCode.discountedPrice) : parseFloat(orderSummary.totalPrice);
+    
 
         const order = {
             clientId: userConnected.id ? userConnected.id : null,
@@ -184,7 +185,9 @@ function Payment() {
             address: userConnected.address,
             zipCode: userConnected.zip_code,
             city: userConnected.city,
-            totalPrice: parseFloat(orderSummary.totalPrice), 
+            totalPrice: finalPrice, // Utiliser le prix final
+            originalPrice: getPromoCode ? parseFloat(getPromoCode.originalPrice) : null,
+            promoCode: getPromoCode ? getPromoCode.code : null,    
             rentalDays: orderSummary.daysDifference,
             startDate: orderSummary.startDate,
             endDate: orderSummary.endDate,
@@ -192,8 +195,6 @@ function Payment() {
             delivery_mode: deliveryMode,
             products: cartItems,
         };
-
-        console.log("Ordre complet envoyé:", order);
 
         try {
             const response = await fetch('https://focaly-service.in/public/api/create-checkout-session', {
@@ -273,7 +274,7 @@ function Payment() {
                                             <div className="product-header">
                                                 <h4>{item.title}</h4>
                                                 <span className="price">{item.price.toFixed(2)}€</span>
-                                                </div>
+                                            </div>
                                             <div className="product-details">
                                                 <small>
                                                     Qté: {item.quantity} × {item.priceUnit.toFixed(2)}€ | 
@@ -286,7 +287,22 @@ function Payment() {
                             </div>
                             <div className="summary-footer">
                                 <div className="order-total">
-                                    <p><strong>Total: {orderSummary.totalPrice}€</strong> ({orderSummary.daysDifference} jours)</p>
+                                    {orderSummary.promoCode ? (
+                                        <>
+                                            <p className="original-price">
+                                                <small>Prix initial: {orderSummary.originalPrice}€</small>
+                                            </p>
+                                            <p>
+                                                <strong>Total avec code "{orderSummary.promoCode}": {orderSummary.totalPrice}€</strong> 
+                                                ({orderSummary.daysDifference} jours)
+                                            </p>
+                                        </>
+                                    ) : (
+                                        <p>
+                                            <strong>Total: {orderSummary.totalPrice}€</strong> 
+                                            ({orderSummary.daysDifference} jours)
+                                        </p>
+                                    )}
                                 </div>
                                 {userConnected && (
                                     <div className="delivery-address">
@@ -299,6 +315,7 @@ function Payment() {
                         </div>
                     </div>
                 )}
+
 
                 <div className="container-form-payment">
                     <div className="form-header">
@@ -438,7 +455,7 @@ function Payment() {
                         )}
 
                         <button type="submit" className="submit-button">
-                            Payer {orderSummary.totalPrice}€
+                            Payer {orderSummary.promoCode ? orderSummary.totalPrice : orderSummary.totalPrice}€
                         </button>
                     </form>
                 </div>

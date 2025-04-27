@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Bestseller.css';
 import { apiService } from '../API/Api';
 import { Link } from 'react-router-dom';
+import ProductsService from '../../Services/Products';
 
 const Bestseller = () => {
     const [products, setProducts] = useState([]);
@@ -10,9 +11,10 @@ const Bestseller = () => {
         const fetchProducts = async () => {
             try {
                 const allProducts = await apiService.getProducts();
-                const limitedProducts = allProducts.slice(0, 5);
-                setProducts(limitedProducts);
-                console.log(limitedProducts);
+                const productBestseller = await ProductsService.getProduct(5);
+                setProducts(productBestseller);
+                console.log('test', productBestseller);
+                
             } catch (error) {
                 console.error("Erreur lors de la récupération des produits:", error);
             }
@@ -20,6 +22,8 @@ const Bestseller = () => {
 
         fetchProducts();
     }, []);
+
+    
 
     return (
         <div className="bestseller">
@@ -29,8 +33,8 @@ const Bestseller = () => {
                 {products.map((product, index) => (
                     <Link key={index} to={`/product/${product.id}`}>
                         <div className="product-bestseller">
-                            <img src={`https://focaly-service.in/public/uploads/images/${product.images[0]}`} alt={product.name} />
-                            <p>{product.title} dès <br />{product.price}€/jours</p>
+                            <img src={product.mainImage} alt={product.name} />
+                            <p>{product.name} dès <br />{product.price}€/jours</p>
                         </div>
                     </Link>
                 ))}

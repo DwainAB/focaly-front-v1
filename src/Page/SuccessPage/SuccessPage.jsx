@@ -17,6 +17,7 @@ function SuccessPage() {
     const [isLoading, setIsLoading] = useState(false);
     const [refOrder, setRefOrder] = useState("");
     const [isInputDisabled, setIsInputDisabled] = useState(false);
+    const [promoName, setPromoName] = useState("");
 
     // Debug logs
     useEffect(() => {
@@ -194,7 +195,11 @@ function SuccessPage() {
                             <BadgeCheck className="w-12 h-12 text-green-500" />
                         </div>
                         <h1 className="title-success success-title">Commande validée !</h1>
-                        <p className="subtitle-success">Merci de votre confiance.</p>
+                        <h2 className="subtitle-success">Merci de votre confiance.</h2>
+                        <p className="info-success">
+                            {promoName && <span>{promoName} - </span>}
+                            Vous pouvez maintenant revenir à l'accueil.
+                        </p>
                         <div className="text-center mt-8">
                             <Link to="/" className="link-button">
                                 Retour à l'accueil
