@@ -1,15 +1,16 @@
 import React, { useState } from "react";
 import "./Signup.css";
-import { apiService } from "../API/Api";
+import Customers from "../../Services/Customers";
 
 function Signup({ onBack }) {
     const [errors, setErrors] = useState({});
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [errorApi, setErrorApi] = useState('');
-    const [cities, setCities] = useState([]); // État pour les villes disponibles
-    const [selectedCity, setSelectedCity] = useState(""); // État pour la ville sélectionnée
-    const [zipCode, setZipCode] = useState(""); // État pour le code postal
+    const [cities, setCities] = useState([]); 
+    const [selectedCity, setSelectedCity] = useState(""); 
+    const [zipCode, setZipCode] = useState(""); 
+    const [successMessage, setSuccessMessage] = useState('');
 
     const validateForm = (event) => {
         const newErrors = {};
@@ -40,8 +41,8 @@ function Signup({ onBack }) {
             const data = await response.json();
             if (data.places && data.places.length > 0) {
                 const cityNames = data.places.map(place => place["place name"]);
-                setCities(cityNames); // Remplit la liste déroulante avec les villes
-                setSelectedCity(cityNames[0]); // Sélectionne la première ville par défaut
+                setCities(cityNames); 
+                setSelectedCity(cityNames[0]); 
             } else {
                 setCities([]);
                 setSelectedCity("");
@@ -60,22 +61,48 @@ function Signup({ onBack }) {
             fetchCitiesByZipCode(zip);
         } else {
             setCities([]);
-            setSelectedCity(""); // Réinitialise la ville si le code postal n'est pas complet
+            setSelectedCity(""); 
         }
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (!validateForm(event)) return;
-        const formData = new FormData(event.target);
-        formData.set("city", selectedCity); // Ajoute la ville sélectionnée au formulaire
-        apiService.addUser(formData)
+        
+        const formValues = {
+            first_name: event.target.firstname.value,
+            last_name: event.target.lastname.value,
+            email: event.target.email.value,
+            password: password,
+            phone: event.target.phone.value,
+            number: event.target.address.value.split(' ')[0] || "", 
+            street: event.target.address.value.split(' ').slice(1).join(' ') || event.target.address.value,
+            postal_code: zipCode,
+            city: selectedCity,
+            country: "France", 
+            type: "customers" 
+        };
+        
+        setErrorApi('');
+        setSuccessMessage('');
+        
+        Customers.createCustomer(formValues)
             .then(response => {
-                if (response.error) setErrorApi(response.error);
+                if (response.error) {
+                    setErrorApi(response.error);
+                } else {
+                    setSuccessMessage("Inscription réussie !");
+                    event.target.reset();
+                    setPassword("");
+                    setConfirmPassword("");
+                    setZipCode("");
+                    setSelectedCity("");
+                    setCities([]);
+                }
             })
             .catch(error => {
-                console.error(error);
-                setErrorApi("Une erreur est survenue.");
+                console.error("Erreur lors de la création du compte :", error);
+                setErrorApi("Une erreur est survenue lors de la création de votre compte.");
             });
     };
 
@@ -85,6 +112,8 @@ function Signup({ onBack }) {
                 <span className="material-symbols-outlined" onClick={onBack}>arrow_back</span>
                 <h1 className="title-registerAndSignup">S'inscrire</h1>
             </div>
+
+            {successMessage && <div className="success-message" style={{ color: 'green' }}>{successMessage}</div>}
 
             <form className="form-registerAndSignup" onSubmit={handleSubmit}>
                 <div className="container-registerAndSignup-input">

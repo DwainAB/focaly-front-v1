@@ -310,7 +310,7 @@ const Cart = () => {
               {cartItems.map((item, index) => (
                 <div key={index} className="container-product-cart">
                   <div className="container-info-product">
-                    <img src={`https://focaly-service.in/public/uploads/images/${item.product.images[0]}`} alt="" />
+                    <img src={item.product.images[0].path_url} alt="" />
                     <div className="container-info-text">
                       <p className='title-info-text'>{item.product.title}</p>
                       <p className='price-info-text'>{parseFloat(item.price).toFixed(2)}€</p>
